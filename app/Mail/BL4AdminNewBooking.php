@@ -8,6 +8,6 @@ class BL4AdminNewBooking extends Mailable {
     use SerializesModels;
     public function __construct(public Booking $booking) {}
     public function envelope(): Envelope { return new Envelope(subject: '[Admin] New Booking Received – ' . $booking->booking_id); }
-    public function content(): Content { return new Content(view: 'emails.bl4'); }
+    public function content(): Content { return new Content(markdown: 'emails.bl4'); }
     public function attachments(): array { return []; }
 }

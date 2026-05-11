@@ -8,6 +8,6 @@ class BL7CancellationConfirmation extends Mailable {
     use SerializesModels;
     public function __construct(public Booking $booking) {}
     public function envelope(): Envelope { return new Envelope(subject: 'Booking Cancellation Confirmed – ' . $booking->booking_id); }
-    public function content(): Content { return new Content(view: 'emails.bl7'); }
+    public function content(): Content { return new Content(markdown: 'emails.bl7'); }
     public function attachments(): array { return []; }
 }
