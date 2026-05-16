@@ -7,7 +7,9 @@ use App\Mail\BL1ReservedConfirmation;
 use App\Mail\BL2NonReservedConfirmation;
 use App\Mail\BL3ParkingCompanyNewBooking;
 use App\Mail\BL4AdminNewBooking;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
@@ -75,24 +77,74 @@ class PayPalController extends Controller
         if (isset($result['status']) && $result['status'] === 'COMPLETED') {
             $transactionId = $result['purchase_units'][0]['payments']['captures'][0]['id'] ?? null;
 
-            $booking = Booking::create([
-                'booking_id'           => Booking::generateBookingId(),
-                'stall_type'           => $pending['stall_type'],
-                'stall_number'         => $pending['stall_number'],
-                'check_in_date'        => $pending['check_in_date'],
-                'check_out_date'       => $pending['check_out_date'],
-                'full_name'            => $pending['full_name'],
-                'phone_number'         => $pending['phone_number'],
-                'email'                => $pending['email'],
-                'refund_plan'          => $pending['refund_plan'],
-                'status'               => 'active',
-                'pass_status'          => $pending['stall_type'] === 'reserved' ? 'not_required' : 'required',
-                'subtotal'             => $pending['subtotal'],
-                'tax'                  => $pending['tax'],
-                'service_fee'          => $pending['service_fee'],
-                'total_amount'         => $pending['total'],
-                'paypal_transaction_id'=> $transactionId,
-            ]);
+            // Re-validate availability inside a DB transaction with row-level locks
+            // to prevent race conditions when two users pay simultaneously.
+            $booking = DB::transaction(function () use ($pending, $transactionId, $provider) {
+                $checkIn  = Carbon::parse($pending['check_in_date']);
+                $checkOut = Carbon::parse($pending['check_out_date']);
+
+                if ($pending['stall_type'] === 'reserved') {
+                    $conflict = Booking::where('stall_type', 'reserved')
+                        ->where('stall_number', $pending['stall_number'])
+                        ->where('status', 'active')
+                        ->where('check_in_date', '<', $checkOut->toDateString())
+                        ->where('check_out_date', '>', $checkIn->toDateString())
+                        ->lockForUpdate()
+                        ->exists();
+
+                    if ($conflict) {
+                        $provider->refundCapturedPayment($transactionId, [
+                            'amount'        => ['value' => number_format($pending['total'], 2, '.', ''), 'currency_code' => 'USD'],
+                            'note_to_payer' => 'Stall no longer available. Full refund issued.',
+                        ]);
+                        return null;
+                    }
+                } else {
+                    $cursor = $checkIn->copy();
+                    while ($cursor->lt($checkOut)) {
+                        $count = Booking::where('stall_type', 'non_reserved')
+                            ->where('status', 'active')
+                            ->where('check_in_date', '<=', $cursor->toDateString())
+                            ->where('check_out_date', '>', $cursor->toDateString())
+                            ->lockForUpdate()
+                            ->count();
+
+                        if ($count >= 75) {
+                            $provider->refundCapturedPayment($transactionId, [
+                                'amount'        => ['value' => number_format($pending['total'], 2, '.', ''), 'currency_code' => 'USD'],
+                                'note_to_payer' => 'Parking full. Full refund issued.',
+                            ]);
+                            return null;
+                        }
+                        $cursor->addDay();
+                    }
+                }
+
+                return Booking::create([
+                    'booking_id'            => Booking::generateBookingId(),
+                    'stall_type'            => $pending['stall_type'],
+                    'stall_number'          => $pending['stall_number'],
+                    'check_in_date'         => $pending['check_in_date'],
+                    'check_out_date'        => $pending['check_out_date'],
+                    'full_name'             => $pending['full_name'],
+                    'phone_number'          => $pending['phone_number'],
+                    'email'                 => $pending['email'],
+                    'refund_plan'           => $pending['refund_plan'],
+                    'status'                => 'active',
+                    'pass_status'           => $pending['stall_type'] === 'reserved' ? 'not_required' : 'required',
+                    'subtotal'              => $pending['subtotal'],
+                    'tax'                   => $pending['tax'],
+                    'service_fee'           => $pending['service_fee'],
+                    'total_amount'          => $pending['total'],
+                    'paypal_transaction_id' => $transactionId,
+                ]);
+            });
+
+            if (!$booking) {
+                session()->forget(['booking_pending', 'paypal_order_id']);
+                return redirect()->route('home')->with('error',
+                    'Sorry, that stall was just taken by another booking while you were paying. A full refund has been issued to your PayPal account.');
+            }
 
             // Send emails
             if ($booking->stall_type === 'reserved') {
