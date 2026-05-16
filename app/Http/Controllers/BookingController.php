@@ -29,10 +29,11 @@ class BookingController extends Controller
             'check_out_date'=> 'required|date|after:check_in_date',
         ]);
 
+        $tz         = config('app.timezone');
         $stallType  = $request->stall_type;
-        $checkIn    = Carbon::parse($request->check_in_date)->startOfDay();
-        $checkOut   = Carbon::parse($request->check_out_date)->startOfDay();
-        $now        = Carbon::now(config('app.timezone'));
+        $checkIn    = Carbon::createFromFormat('Y-m-d', $request->check_in_date, $tz)->startOfDay();
+        $checkOut   = Carbon::createFromFormat('Y-m-d', $request->check_out_date, $tz)->startOfDay();
+        $now        = Carbon::now($tz);
 
         // Validate booking rules
         $ruleError = $this->validateBookingRules($checkIn, $checkOut, $now);
@@ -182,28 +183,35 @@ class BookingController extends Controller
 
     private function validateBookingRules(Carbon $checkIn, Carbon $checkOut, Carbon $now): ?string
     {
-        // No past dates
-        if ($checkIn->lt($now->copy()->startOfDay()->addDay())) {
+        $todayStr    = $now->toDateString();
+        $tomorrowStr = $now->copy()->addDay()->toDateString();
+        $checkInStr  = $checkIn->toDateString();
+        $dow         = $now->dayOfWeek; // Carbon: 0=Sun,1=Mon,...,5=Fri,6=Sat
+
+        // No same-day booking
+        if ($checkInStr <= $todayStr) {
             return 'Same-day booking is not allowed. Please select a future date.';
         }
 
-        $dayOfWeek = $now->dayOfWeek; // 0=Sun,5=Fri,6=Sat
-
-        // No next-day booking after 4 PM
-        if ($checkIn->isToday() || ($checkIn->isTomorrow() && $now->hour >= 16)) {
+        // No next-day booking after 4:00 PM (system time)
+        if ($checkInStr === $tomorrowStr && $now->hour >= 16) {
             return 'Next-day booking is closed after 4:00 PM.';
         }
 
-        // No weekend booking after Friday 12 PM
-        if ($dayOfWeek === Carbon::FRIDAY && $now->hour >= 12) {
-            if ($checkIn->isSaturday() || $checkIn->isSunday()) {
+        // No weekend booking after Friday 12:00 PM
+        // (blocks only the UPCOMING Saturday and Sunday)
+        if ($dow === Carbon::FRIDAY && $now->hour >= 12) {
+            $upcomingSat = $now->copy()->next(Carbon::SATURDAY)->toDateString();
+            $upcomingSun = $now->copy()->next(Carbon::SUNDAY)->toDateString();
+            if ($checkInStr === $upcomingSat || $checkInStr === $upcomingSun) {
                 return 'Weekend booking is closed after Friday 12:00 PM.';
             }
         }
 
         // No Sunday booking on Saturday
-        if ($dayOfWeek === Carbon::SATURDAY) {
-            if ($checkIn->isSunday()) {
+        if ($dow === Carbon::SATURDAY) {
+            $upcomingSun = $now->copy()->next(Carbon::SUNDAY)->toDateString();
+            if ($checkInStr === $upcomingSun) {
                 return 'Sunday booking is not available on Saturday.';
             }
         }
