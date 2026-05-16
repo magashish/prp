@@ -147,6 +147,36 @@
         </div>
     </div>
 </div>
+
+<!-- Who, What and Where Section -->
+<div class="bg-white py-5 border-top">
+    <div class="container">
+        <h2 class="text-center fw-bold mb-5" style="color:#1a3c5e;">Who, What &amp; Where</h2>
+        <div class="row g-4 text-center">
+            <div class="col-md-4">
+                <div class="p-4">
+                    <div class="mb-3" style="font-size:2.5rem; color:#0d6efd;"><i class="bi bi-people-fill"></i></div>
+                    <h5 class="fw-bold">Who Is This For?</h5>
+                    <p class="text-muted">Anyone needing convenient, affordable parking near our facility. No account required — book in minutes as a guest. International visitors welcome.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4">
+                    <div class="mb-3" style="font-size:2.5rem; color:#198754;"><i class="bi bi-car-front-fill"></i></div>
+                    <h5 class="fw-bold">What Do You Get?</h5>
+                    <p class="text-muted">Choose a <strong>Reserved Stall</strong> ($45/day) for a guaranteed dedicated spot, or a <strong>Non-Reserved Stall</strong> ($35/day) for flexible open parking with an access code. All bookings include a confirmation email.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4">
+                    <div class="mb-3" style="font-size:2.5rem; color:#dc3545;"><i class="bi bi-geo-alt-fill"></i></div>
+                    <h5 class="fw-bold">Where Is It?</h5>
+                    <p class="text-muted">Our parking garage is conveniently located near the venue. Reserved stall holders park in designated spots. Non-reserved holders present their parking pass with access code at the garage entrance.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
@@ -204,7 +234,16 @@ document.getElementById('availabilityForm').addEventListener('submit', async fun
         document.getElementById('checkoutSection').classList.remove('d-none');
         updateTotal();
     } else {
-        resultDiv.innerHTML = `<div class="alert alert-warning"><i class="bi bi-exclamation-triangle-fill me-1"></i>${data.message}</div>`;
+        resultDiv.innerHTML = `
+            <div class="alert alert-warning mb-2"><i class="bi bi-exclamation-triangle-fill me-1"></i>${data.message}</div>
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btn-outline-primary btn-sm flex-fill" onclick="selectAnotherDate()">
+                    <i class="bi bi-calendar3 me-1"></i> Select Another Date
+                </button>
+                <button type="button" class="btn btn-outline-secondary btn-sm flex-fill" onclick="changeStallType()">
+                    <i class="bi bi-arrow-left-right me-1"></i> Change Stall Type
+                </button>
+            </div>`;
         document.getElementById('checkoutSection').classList.add('d-none');
     }
 
@@ -213,6 +252,18 @@ document.getElementById('availabilityForm').addEventListener('submit', async fun
 });
 
 document.getElementById('refundPlan')?.addEventListener('change', updateTotal);
+
+function selectAnotherDate() {
+    document.getElementById('check_in_date').value = '';
+    document.getElementById('check_out_date').value = '';
+    resetAvailability();
+    document.getElementById('check_in_date').focus();
+}
+
+function changeStallType() {
+    document.querySelectorAll('input[name="stall_type"]').forEach(el => el.checked = false);
+    resetAvailability();
+}
 
 function updateTotal() {
     if (!availData) return;
