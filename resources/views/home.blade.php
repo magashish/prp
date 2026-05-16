@@ -162,7 +162,20 @@ document.getElementById('check_in_date').addEventListener('change', function () 
     const cin = new Date(this.value);
     cin.setDate(cin.getDate() + 1);
     document.getElementById('check_out_date').min = cin.toISOString().split('T')[0];
+    resetAvailability();
 });
+
+document.getElementById('check_out_date').addEventListener('change', resetAvailability);
+document.querySelectorAll('input[name="stall_type"]').forEach(el => el.addEventListener('change', resetAvailability));
+
+function resetAvailability() {
+    availData = null;
+    const resultDiv = document.getElementById('availabilityResult');
+    resultDiv.classList.add('d-none');
+    resultDiv.innerHTML = '';
+    document.getElementById('checkoutSection').classList.add('d-none');
+    document.getElementById('totalDisplay').innerHTML = '';
+}
 
 const baseSubtotal  = { reserved: 45, non_reserved: 35 };
 const refundPlanCost = 25;
