@@ -36,7 +36,7 @@
                                     <input class="form-check-input" type="radio" name="stall_type" id="stallNonReserved" value="non_reserved" required>
                                     <label class="form-check-label w-100" for="stallNonReserved" style="cursor:pointer">
                                         <strong>Non-Reserved Stall</strong><br>
-                                        <span class="price-badge" style="background:#198754">$35/day</span>
+                                        <span class="price-badge" style="background:#02A38A">$35/day</span>
                                         <small class="d-block text-muted mt-1">Up to 75 spaces. Parking pass with code required.</small>
                                     </label>
                                 </div>
@@ -151,18 +151,18 @@
 <!-- Who, What and Where Section -->
 <div class="bg-white py-5 border-top">
     <div class="container">
-        <h2 class="text-center fw-bold mb-5" style="color:#1a3c5e;">Who, What &amp; Where</h2>
+        <h2 class="text-center fw-bold mb-5" style="color:#082B4D;">Who, What &amp; Where</h2>
         <div class="row g-4 text-center">
             <div class="col-md-4">
                 <div class="p-4">
-                    <div class="mb-3" style="font-size:2.5rem; color:#0d6efd;"><i class="bi bi-people-fill"></i></div>
+                    <div class="mb-3" style="font-size:2.5rem; color:#0f4c81;"><i class="bi bi-people-fill"></i></div>
                     <h5 class="fw-bold">Who Is This For?</h5>
                     <p class="text-muted">Anyone needing convenient, affordable parking near our facility. No account required — book in minutes as a guest. International visitors welcome.</p>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="p-4">
-                    <div class="mb-3" style="font-size:2.5rem; color:#198754;"><i class="bi bi-car-front-fill"></i></div>
+                    <div class="mb-3" style="font-size:2.5rem; color:#02A38A;"><i class="bi bi-car-front-fill"></i></div>
                     <h5 class="fw-bold">What Do You Get?</h5>
                     <p class="text-muted">Choose a <strong>Reserved Stall</strong> ($45/day) for a guaranteed dedicated spot, or a <strong>Non-Reserved Stall</strong> ($35/day) for flexible open parking with an access code. All bookings include a confirmation email.</p>
                 </div>

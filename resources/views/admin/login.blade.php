@@ -6,7 +6,7 @@
     <title>Admin Login – Parking Stall Rental</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <style>
-        body { background: linear-gradient(135deg, #1a3c5e 0%, #2d6a9f 100%); min-height: 100vh; display:flex; align-items:center; }
+        body { background: linear-gradient(135deg, #082B4D 0%, #0f4c81 100%); min-height: 100vh; display:flex; align-items:center; }
     </style>
 </head>
 <body>

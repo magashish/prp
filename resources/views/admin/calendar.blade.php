@@ -6,11 +6,11 @@
     .cal-grid { display:grid; grid-template-columns: repeat(7, 1fr); gap:4px; }
     .cal-header { text-align:center; font-weight:700; font-size:.75rem; text-transform:uppercase; padding:6px 0; color:#6c757d; }
     .cal-cell { min-height:90px; border:1px solid #e9ecef; border-radius:6px; padding:6px; background:#fff; font-size:.75rem; }
-    .cal-cell.other-month { background:#f8f9fa; opacity:.5; }
-    .cal-day-num { font-weight:700; color:#1a3c5e; margin-bottom:4px; }
-    .event-s1 { background:#1a3c5e; color:#fff; border-radius:3px; padding:1px 5px; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .cal-cell.other-month { background:#f4f4f4; opacity:.5; }
+    .cal-day-num { font-weight:700; color:#082B4D; margin-bottom:4px; }
+    .event-s1 { background:#082B4D; color:#fff; border-radius:3px; padding:1px 5px; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .event-s2 { background:#6f42c1; color:#fff; border-radius:3px; padding:1px 5px; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .event-open { background:#198754; color:#fff; border-radius:3px; padding:1px 5px; }
+    .event-open { background:#02A38A; color:#fff; border-radius:3px; padding:1px 5px; }
     .event-open.warn { background:#fd7e14; }
     .legend-dot { width:12px; height:12px; border-radius:50%; display:inline-block; }
 </style>
@@ -25,9 +25,9 @@
             <button class="btn btn-outline-secondary btn-sm" id="nextMonth">Next <i class="bi bi-chevron-right"></i></button>
         </div>
         <div class="d-flex align-items-center gap-3 small">
-            <span><span class="legend-dot me-1" style="background:#1a3c5e"></span>Stall 1 (Reserved)</span>
+            <span><span class="legend-dot me-1" style="background:#082B4D"></span>Stall 1 (Reserved)</span>
             <span><span class="legend-dot me-1" style="background:#6f42c1"></span>Stall 2 (Reserved)</span>
-            <span><span class="legend-dot me-1" style="background:#198754"></span>Open (Booked Count)</span>
+            <span><span class="legend-dot me-1" style="background:#02A38A"></span>Open (Booked Count)</span>
         </div>
     </div>
     <div class="card-body p-3">

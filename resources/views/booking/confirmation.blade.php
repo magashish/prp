@@ -7,7 +7,7 @@
         <div class="col-lg-7">
             <div class="card border-0 shadow">
                 <div class="card-body text-center p-5">
-                    <div class="mb-3" style="font-size:4rem; color:#198754;">&#10003;</div>
+                    <div class="mb-3" style="font-size:4rem; color:#02A38A;">&#10003;</div>
                     <h2 class="fw-bold text-success">Booking Confirmed!</h2>
                     <p class="text-muted mb-4">Thank you, {{ $booking->full_name }}. Your booking has been confirmed and a confirmation email has been sent to <strong>{{ $booking->email }}</strong>.</p>
 
