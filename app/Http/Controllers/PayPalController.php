@@ -171,7 +171,7 @@ class PayPalController extends Controller
     public function cancel()
     {
         return redirect()->route('booking.payment')->with('warning', 'Payment was cancelled. You can try again.');
-    }
+
 
     // ─── Shared booking save + emails ─────────────────────────────────
 
