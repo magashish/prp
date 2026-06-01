@@ -2,6 +2,18 @@
 @section('title', 'Booking ' . $booking->booking_id)
 
 @section('content')
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <a href="{{ route('admin.bookings.index') }}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left me-1"></i>Back to Bookings
+    </a>
+    
+    <form action="{{ route('admin.bookings.destroy', $booking) }}" method="POST" onsubmit="return confirm('Permanently delete this booking?')">
+        @csrf 
+        @method('DELETE')
+        <button class="btn btn-danger btn-sm">Delete</button>
+    </form>
+</div>
+
 <div class="row g-4">
     <div class="col-lg-7">
         <div class="card border-0 shadow-sm">
@@ -11,8 +23,9 @@
                     {{ ucwords(str_replace('_', ' ', $booking->status)) }}
                 </span>
             </div>
+
             <div class="card-body">
-                <table class="table table-sm">
+                <table class="table table-sm mb-0">
                     <tr><th>Full Name</th><td>{{ $booking->full_name }}</td></tr>
                     <tr><th>Email</th><td>{{ $booking->email }}</td></tr>
                     <tr><th>Phone</th><td>{{ $booking->phone_number }}</td></tr>
@@ -25,12 +38,18 @@
                     <tr><th>Total Paid</th><td class="fw-bold">${{ number_format($booking->total_amount, 2) }}</td></tr>
                     <tr><th>Refund Plan</th><td>{{ $booking->refund_plan ? 'Yes' : 'No' }}</td></tr>
                     <tr><th>PayPal TxID</th><td><small>{{ $booking->paypal_transaction_id ?? '—' }}</small></td></tr>
-                    <tr><th>Pass Status</th><td>
-                        @if($booking->pass_status === 'required') <span class="badge bg-danger">Required</span>
-                        @elseif($booking->pass_status === 'sent') <span class="badge bg-success">Sent</span>
-                        @else <span class="badge bg-secondary">N/A</span>
-                        @endif
-                    </td></tr>
+                    <tr>
+                        <th>Pass Status</th>
+                        <td>
+                            @if($booking->pass_status === 'required') 
+                            <span class="badge bg-danger fs-6 px-3 py-2">Required</span>
+                            @elseif($booking->pass_status === 'sent') 
+                            <span class="badge bg-success fs-6 px-3 py-2">Sent</span>
+                            @else 
+                            <span class="badge bg-secondary fs-6 px-3 py-2">N/A</span>
+                            @endif
+                        </td>
+                    </tr>
                     @if($booking->parking_code)
                     <tr><th>Parking Code</th><td><strong>{{ $booking->parking_code }}</strong></td></tr>
                     @endif
@@ -40,18 +59,16 @@
                     <tr><th>Created</th><td>{{ $booking->created_at->format('M d, Y H:i') }}</td></tr>
                 </table>
             </div>
+            
             <div class="card-footer bg-white d-flex gap-2">
                 <a href="{{ route('admin.bookings.edit', $booking) }}" class="btn btn-outline-primary btn-sm">Edit</a>
                 @if($booking->status === 'active')
-                <form action="{{ route('admin.bookings.cancel', $booking) }}" method="POST" onsubmit="return confirm('Cancel this booking?')">
+                <form class="ms-auto" action="{{ route('admin.bookings.cancel', $booking) }}" method="POST" onsubmit="return confirm('Cancel this booking?')">
                     @csrf
                     <button class="btn btn-warning btn-sm">Cancel Booking</button>
                 </form>
                 @endif
-                <form action="{{ route('admin.bookings.destroy', $booking) }}" method="POST" onsubmit="return confirm('Permanently delete this booking?')" class="ms-auto">
-                    @csrf @method('DELETE')
-                    <button class="btn btn-danger btn-sm">Delete</button>
-                </form>
+                
             </div>
         </div>
     </div>
@@ -59,7 +76,7 @@
     @if($booking->stall_type === 'non_reserved' && $booking->status === 'active')
     <div class="col-lg-5">
         <div class="card border-0 shadow-sm border-warning">
-            <div class="card-header bg-warning">
+            <div class="card-header bg-primary text-white">
                 <h6 class="mb-0"><i class="bi bi-key-fill me-2"></i>Send Parking Pass</h6>
             </div>
             <div class="card-body">
@@ -70,15 +87,13 @@
                         <label class="form-label">Parking Code</label>
                         <input type="text" name="parking_code" class="form-control" value="{{ $booking->parking_code }}" required>
                     </div>
-                    <button type="submit" class="btn btn-warning w-100"><i class="bi bi-send-fill me-1"></i>Send Parking Pass to Customer</button>
+                    <button type="submit" class="btn btn-warning w-100">
+                        <i class="bi bi-send-fill me-1"></i>Send Parking Pass to Customer
+                    </button>
                 </form>
             </div>
         </div>
     </div>
     @endif
-</div>
-
-<div class="mt-3">
-    <a href="{{ route('admin.bookings.index') }}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to Bookings</a>
 </div>
 @endsection

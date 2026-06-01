@@ -6,7 +6,7 @@
     <div class="row justify-content-center">
         <div class="col-lg-6">
             <div class="card border-0 shadow-sm">
-                <div class="card-header bg-danger text-white py-3">
+                <div class="card-header bg-primary text-white py-3">
                     <h5 class="mb-0"><i class="bi bi-x-circle me-2"></i>Cancel Your Booking</h5>
                 </div>
                 <div class="card-body p-4">
@@ -21,7 +21,7 @@
                     <form action="{{ route('cancellation.lookup') }}" method="POST">
                         @csrf
                         <div class="mb-3">
-                            <label class="form-label">Booking ID# or Full Name</label>
+                            <label class="form-label">Booking ID</label>
                             <input type="text" name="identifier" class="form-control" value="{{ old('identifier') }}" required>
                         </div>
                         <div class="row g-3 mb-3">
@@ -34,18 +34,7 @@
                                 <input type="date" name="check_out_date" class="form-control" value="{{ old('check_out_date') }}" required>
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Stall Type</label>
-                            <select name="stall_type" class="form-select" required>
-                                <option value="">-- Select --</option>
-                                <option value="reserved" {{ old('stall_type') === 'reserved' ? 'selected' : '' }}>Reserved</option>
-                                <option value="non_reserved" {{ old('stall_type') === 'non_reserved' ? 'selected' : '' }}>Non-Reserved</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Email Address</label>
-                            <input type="email" name="email" class="form-control" value="{{ old('email') }}" required>
-                        </div>
+
                         <button type="submit" class="btn btn-danger w-100">Find My Booking</button>
                     </form>
                 </div>

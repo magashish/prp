@@ -1,26 +1,37 @@
+@php
+    $totalDays = $booking->check_in_date->diffInDays($booking->check_out_date) + 1;
+    $refundAmount = $booking->status === 'cancelled_with_refund' ? $booking->total_amount : 0;
+    $statusLabel = $booking->status === 'cancelled_with_refund' ? 'Cancelled with Refund' : 'Cancelled No Refund';
+@endphp
 <x-mail::message>
-# [Admin] Booking Cancelled – {{ $booking->booking_id }}
+Hi Admin,
 
-A booking has been cancelled.
+A booking has been cancelled. See detail below.
 
-<x-mail::panel>
-**Booking ID:** {{ $booking->booking_id }}
-**Customer:** {{ $booking->full_name }} ({{ $booking->email }})
-**Stall Type:** {{ ucwords(str_replace('_', ' ', $booking->stall_type)) }}
-**Check-in:** {{ $booking->check_in_date->format('l, F j, Y') }}
-**Check-out:** {{ $booking->check_out_date->format('l, F j, Y') }}
-**Total Paid:** ${{ number_format($booking->total_amount, 2) }}
-**Refund Plan:** {{ $booking->refund_plan ? 'Yes – Refund Required' : 'No – No Refund' }}
-**Status:** {{ ucwords(str_replace('_', ' ', $booking->status)) }}
-</x-mail::panel>
+**BOOKING INFORMATION DETAILS**
 
-@if($booking->status === 'cancelled_with_refund')
-**Action Required:** Please process the refund of ${{ number_format($booking->total_amount, 2) }} via PayPal for transaction `{{ $booking->paypal_transaction_id }}`.
-@endif
+| | |
+|:---|:---|
+| Booking #: | **{{ $booking->booking_id }}** |
+| Customer: | **{{ $booking->full_name }}** |
+| Check-In Date: | **{{ $booking->check_in_date->format('m/d/Y') }}** |
+| Check-Out Date: | **{{ $booking->check_out_date->format('m/d/Y') }}** |
+| Total Days: | **{{ $totalDays }} Day(s)** |
+| Stall Type: | **{{ ucwords(str_replace('_', ' ', $booking->stall_type)) }}** |
+
+---
+
+**CANCELLATION DETAILS**
+
+| | |
+|:---|:---|
+| Amount Paid: | **${{ number_format($booking->total_amount, 2) }}** |
+| Refund Amount: | **${{ number_format($refundAmount, 2) }}** |
+| Status: | **{{ $statusLabel }}** |
+
+Please review and process if necessary.
 
 <x-mail::button :url="config('app.url') . '/admin/bookings/' . $booking->id">
 View in Admin
 </x-mail::button>
-
-{{ config('app.name') }}
 </x-mail::message>

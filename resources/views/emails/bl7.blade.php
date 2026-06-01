@@ -1,25 +1,38 @@
 <x-mail::message>
-# Booking Cancellation Confirmed
+Aloha {{ $booking->full_name }},
 
-Dear {{ $booking->full_name }},
+Your parking reservation has been successfully cancelled.
 
-Your booking has been successfully cancelled.
+**BOOKING DETAILS**
 
-<x-mail::panel>
-**Booking ID:** {{ $booking->booking_id }}
-**Stall Type:** {{ ucwords(str_replace('_', ' ', $booking->stall_type)) }}
-**Check-in:** {{ $booking->check_in_date->format('l, F j, Y') }}
-**Check-out:** {{ $booking->check_out_date->format('l, F j, Y') }}
-**Cancellation Status:** {{ $booking->status === 'cancelled_with_refund' ? '✅ Cancelled with Refund' : '❌ Cancelled – No Refund' }}
-</x-mail::panel>
+| | |
+|:---|:---|
+| Booking #: | **{{ $booking->booking_id }}** |
+| Check-In Date: | **{{ $booking->check_in_date->format('m/d/Y') }}** |
+| Check-Out Date: | **{{ $booking->check_out_date->format('m/d/Y') }}** |
+| Stall Type: | **{{ ucwords(str_replace('_', ' ', $booking->stall_type)) }}** |
+
+---
+
+**REFUND DETAILS**
 
 @if($booking->status === 'cancelled_with_refund')
-Your refund will be processed manually by our team. Please allow a few business days for it to appear.
+| Refund Amount: | **${{ number_format($booking->total_amount, 2) }}** |
+|:---|:---|
+
+The refund will be processed accordingly.
 @else
-No refund is applicable as the Refund Protection Plan was not purchased at the time of booking.
+This booking is not eligible for a refund, as the Refund Protection Plan was not purchased.
 @endif
 
-If you believe this was a mistake, please contact us immediately.
+---
 
-{{ config('app.name') }}
+**Important Note**
+
+All cancellation and refund policies are based on Hawaii Standard Time (HST).
+
+If you have any questions, please contact us.
+
+blrentals@gmail.com
+(000) 000-0000
 </x-mail::message>

@@ -6,7 +6,7 @@
     <div class="row justify-content-center">
         <div class="col-lg-6">
             <div class="card border-0 shadow-sm">
-                <div class="card-header bg-warning py-3">
+                <div class="card-header bg-primary text-white py-3">
                     <h5 class="mb-0"><i class="bi bi-exclamation-triangle me-2"></i>Confirm Cancellation</h5>
                 </div>
                 <div class="card-body p-4">

@@ -1,26 +1,29 @@
+@php
+    $totalDays = $booking->check_in_date->diffInDays($booking->check_out_date) + 1;
+@endphp
 <x-mail::message>
-# New Booking Received – {{ $booking->booking_id }}
+Hi Admin,
 
-A new booking has been submitted and payment confirmed.
+A new Parking Rental Booking has been successfully completed.
 
-<x-mail::panel>
-**Booking ID:** {{ $booking->booking_id }}
-**Customer:** {{ $booking->full_name }} ({{ $booking->email }})
-**Phone:** {{ $booking->phone_number }}
-**Stall Type:** {{ ucwords(str_replace('_', ' ', $booking->stall_type)) }}{{ $booking->stall_number ? ' – Stall #' . $booking->stall_number : '' }}
-**Check-in:** {{ $booking->check_in_date->format('l, F j, Y') }}
-**Check-out:** {{ $booking->check_out_date->format('l, F j, Y') }}
-**Total Paid:** ${{ number_format($booking->total_amount, 2) }}
-**Refund Plan:** {{ $booking->refund_plan ? 'Yes' : 'No' }}
-**Pass Status:** {{ ucwords(str_replace('_', ' ', $booking->pass_status)) }}
-**PayPal Tx:** {{ $booking->paypal_transaction_id ?? 'N/A' }}
-</x-mail::panel>
+**BOOKING DETAILS**
 
-@if($booking->stall_type === 'non_reserved')
+| | |
+|:---|:---|
+| Booking #: | **{{ $booking->booking_id }}** |
+| Check-In Date: | **{{ $booking->check_in_date->format('m/d/Y') }}** |
+| Check-Out Date: | **{{ $booking->check_out_date->format('m/d/Y') }}** |
+| Total Days: | **{{ $totalDays }} Day(s)** |
+| Stall Type: | **{{ ucwords(str_replace('_', ' ', $booking->stall_type)) }}** |
+| Stall Number: | **{{ $booking->stall_number ?? 'N/A' }}** |
+| Amount Paid: | **${{ number_format($booking->total_amount, 2) }}** |
+| Refund Plan: | **{{ $booking->refund_plan ? 'Yes (Purchased)' : 'No' }}** |
+| Customer: | **{{ $booking->full_name }}** |
+| Phone: | **{{ $booking->phone_number }}** |
+| Email: | **{{ $booking->email }}** |
+
 <x-mail::button :url="config('app.url') . '/admin/bookings/' . $booking->id">
-Open Booking in Admin
+View Booking in Admin
 </x-mail::button>
-@endif
 
-{{ config('app.name') }}
 </x-mail::message>

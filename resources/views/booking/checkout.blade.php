@@ -67,7 +67,7 @@
                         </div>
 
                         <button type="submit" class="btn btn-success w-100 mt-3">
-                            <i class="bi bi-paypal me-1"></i> Proceed to PayPal
+                            <i class="bi bi-lock-fill me-1"></i> Continue to Payment
                         </button>
                         <a href="{{ route('home') }}" class="btn btn-outline-secondary w-100 mt-2">← Change Dates / Stall Type</a>
                     </form>

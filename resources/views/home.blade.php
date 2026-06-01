@@ -5,7 +5,7 @@
 @section('content')
 <div class="hero-section">
     <div class="container text-center">
-        <h1 class="display-5 fw-bold mb-2">Parking Stall Rental</h1>
+        <h1 class="display-5 fw-bold mb-2">BL Rentals Stall Booking</h1>
         <p class="lead mb-0">Fast, easy, no account required. Book your parking stall online in minutes.</p>
     </div>
 </div>
@@ -16,13 +16,13 @@
         <div class="col-lg-7">
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-primary text-white py-3">
-                    <h5 class="mb-0"><i class="bi bi-calendar-check me-2"></i>Check Availability & Book</h5>
+                    <h5 class="mb-0"><i class="bi bi-calendar-check me-2"></i>Check Availability</h5>
                 </div>
                 <div class="card-body p-4">
                     <form id="availabilityForm">
                         @csrf
                         <div class="mb-3">
-                            <label class="form-label">Stall Type</label>
+                            <label class="form-label">Select Stall Type</label>
                             <div class="d-flex gap-3">
                                 <div class="form-check form-check-inline border rounded p-3 flex-fill" style="cursor:pointer">
                                     <input class="form-check-input" type="radio" name="stall_type" id="stallReserved" value="reserved" required>
@@ -37,7 +37,7 @@
                                     <label class="form-check-label w-100" for="stallNonReserved" style="cursor:pointer">
                                         <strong>Non-Reserved Stall</strong><br>
                                         <span class="price-badge" style="background:#02A38A">$35/day</span>
-                                        <small class="d-block text-muted mt-1">Up to 75 spaces. Parking pass with code required.</small>
+                                        <small class="d-block text-muted mt-1">Parking pass with code required.</small>
                                     </label>
                                 </div>
                             </div>
@@ -64,7 +64,11 @@
                     <!-- Checkout form (shown after availability check) -->
                     <div id="checkoutSection" class="d-none mt-4">
                         <hr>
-                        <h6 class="fw-bold mb-3"><i class="bi bi-person-fill me-1"></i>Your Information</h6>
+                        
+                        <h6 class="fw-bold mb-3 bg-primary text-white p-3 rounded d-flex align-items-center">
+                            <i class="bi bi-person-fill me-2"></i> Complete your Information & Book
+                        </h6>
+                        
                         <form action="{{ route('booking.store-session') }}" method="POST" id="checkoutForm">
                             @csrf
                             <div class="row g-3">
@@ -102,7 +106,7 @@
                             </div>
 
                             <button type="submit" class="btn btn-success w-100 mt-3">
-                                <i class="bi bi-paypal me-1"></i> Proceed to PayPal
+                                <i class="bi bi-lock-fill me-1"></i> Continue to Payment
                             </button>
                         </form>
                     </div>
@@ -138,8 +142,8 @@
                     <table class="table table-sm mb-0 small">
                         <tr><td>Reserved Stall</td><td class="text-end fw-bold">$45/day</td></tr>
                         <tr><td>Non-Reserved Stall</td><td class="text-end fw-bold">$35/day</td></tr>
-                        <tr><td>Tax</td><td class="text-end">4.5%</td></tr>
-                        <tr><td>Service Fee</td><td class="text-end">3%</td></tr>
+                        <!-- <tr><td>Tax</td><td class="text-end">4.5%</td></tr>
+                        <tr><td>Service Fee</td><td class="text-end">3%</td></tr> -->
                         <tr><td>Refund Protection</td><td class="text-end">+$25.00</td></tr>
                     </table>
                 </div>
@@ -237,10 +241,10 @@ document.getElementById('availabilityForm').addEventListener('submit', async fun
         resultDiv.innerHTML = `
             <div class="alert alert-warning mb-2"><i class="bi bi-exclamation-triangle-fill me-1"></i>${data.message}</div>
             <div class="d-flex gap-2">
-                <button type="button" class="btn btn-outline-primary btn-sm flex-fill" onclick="selectAnotherDate()">
+                <button type="button" class="btn btn-outline-primary btn-sm flex-fill mb-2" onclick="selectAnotherDate()">
                     <i class="bi bi-calendar3 me-1"></i> Select Another Date
                 </button>
-                <button type="button" class="btn btn-outline-secondary btn-sm flex-fill" onclick="changeStallType()">
+                <button type="button" class="btn btn-outline-secondary btn-sm flex-fill mb-2" onclick="changeStallType()">
                     <i class="bi bi-arrow-left-right me-1"></i> Change Stall Type
                 </button>
             </div>`;

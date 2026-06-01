@@ -49,7 +49,7 @@ class BookingController extends Controller
                     'message'   => 'Both reserved stalls are unavailable for the selected dates.',
                 ]);
             }
-            $days     = $checkIn->diffInDays($checkOut);
+            $days     = $checkIn->diffInDays($checkOut) + 1;
             $subtotal = $days * self::RESERVED_PRICE;
         } else {
             if (!$this->nonReservedAvailable($checkIn, $checkOut)) {
@@ -59,7 +59,7 @@ class BookingController extends Controller
                 ]);
             }
             $stallNumber = null;
-            $days        = $checkIn->diffInDays($checkOut);
+            $days        = $checkIn->diffInDays($checkOut) + 1;
             $subtotal    = $days * self::NON_RESERVED_PRICE;
         }
 
@@ -105,6 +105,19 @@ class BookingController extends Controller
         return view('booking.checkout', compact('pending'));
     }
 
+    public function paymentPage()
+    {
+        $pending = session('booking_pending');
+        if (!$pending || empty($pending['email'])) {
+            return redirect()->route('home')->with('error', 'Session expired. Please start again.');
+        }
+
+        $mode     = config('paypal.mode');
+        $clientId = config("paypal.{$mode}.client_id");
+
+        return view('booking.payment', compact('pending', 'clientId'));
+    }
+
     public function storeSession(Request $request)
     {
         $request->validate([
@@ -122,7 +135,7 @@ class BookingController extends Controller
 
         $refundPlan  = $request->boolean('refund_plan');
         $refundCost  = $refundPlan ? self::REFUND_PLAN_PRICE : 0;
-        $total       = $pending['total'] + $refundCost;
+        $total       = $pending['subtotal'] + $pending['tax'] + $pending['service_fee'] + $refundCost;
 
         session()->put('booking_pending.full_name',    $request->full_name);
         session()->put('booking_pending.phone_number', $request->phone_number);
@@ -131,7 +144,7 @@ class BookingController extends Controller
         session()->put('booking_pending.refund_cost',  $refundCost);
         session()->put('booking_pending.total',        $total);
 
-        return redirect()->route('paypal.redirect');
+        return redirect()->route('booking.payment');
     }
 
     public function confirmation(Booking $booking)
@@ -148,8 +161,8 @@ class BookingController extends Controller
                 ->where('stall_number', $stall)
                 ->where('status', 'active')
                 ->where(function ($q) use ($checkIn, $checkOut) {
-                    $q->where('check_in_date', '<', $checkOut->toDateString())
-                      ->where('check_out_date', '>', $checkIn->toDateString());
+                    $q->where('check_in_date', '<=', $checkOut->toDateString())
+                      ->where('check_out_date', '>=', $checkIn->toDateString());
                 })->exists();
 
             if (!$conflict) {
@@ -163,11 +176,11 @@ class BookingController extends Controller
     private function nonReservedAvailable(Carbon $checkIn, Carbon $checkOut): bool
     {
         $cursor = $checkIn->copy();
-        while ($cursor->lt($checkOut)) {
+        while ($cursor->lte($checkOut)) {
             $count = Booking::where('stall_type', 'non_reserved')
                 ->where('status', 'active')
                 ->where('check_in_date', '<=', $cursor->toDateString())
-                ->where('check_out_date', '>', $cursor->toDateString())
+                ->where('check_out_date', '>=', $cursor->toDateString())
                 ->count();
 
             if ($count >= self::NON_RESERVED_CAP) {
@@ -193,13 +206,15 @@ class BookingController extends Controller
             return 'Same-day booking is not allowed. Please select a future date.';
         }
 
-        // No next-day booking after 4:00 PM (system time)
-        if ($checkInStr === $tomorrowStr && $now->hour >= 16) {
-            return 'Next-day booking is closed after 4:00 PM.';
+        // No Sunday booking on Saturday (checked before next-day rule to show the right message)
+        if ($dow === Carbon::SATURDAY) {
+            $upcomingSun = $now->copy()->next(Carbon::SUNDAY)->toDateString();
+            if ($checkInStr === $upcomingSun) {
+                return 'Sunday booking is not available on Saturday.';
+            }
         }
 
-        // No weekend booking after Friday 12:00 PM
-        // (blocks only the UPCOMING Saturday and Sunday)
+        // No weekend booking after Friday 12:00 PM (blocks upcoming Saturday and Sunday only)
         if ($dow === Carbon::FRIDAY && $now->hour >= 12) {
             $upcomingSat = $now->copy()->next(Carbon::SATURDAY)->toDateString();
             $upcomingSun = $now->copy()->next(Carbon::SUNDAY)->toDateString();
@@ -208,12 +223,9 @@ class BookingController extends Controller
             }
         }
 
-        // No Sunday booking on Saturday
-        if ($dow === Carbon::SATURDAY) {
-            $upcomingSun = $now->copy()->next(Carbon::SUNDAY)->toDateString();
-            if ($checkInStr === $upcomingSun) {
-                return 'Sunday booking is not available on Saturday.';
-            }
+        // No next-day booking after 4:00 PM (system time)
+        if ($checkInStr === $tomorrowStr && $now->hour >= 16) {
+            return 'Next-day booking is closed after 4:00 PM.';
         }
 
         return null;

@@ -16,8 +16,11 @@ Route::post('/booking/checkout', [BookingController::class, 'storeSession'])->na
 Route::get('/terms', fn() => view('terms'))->name('terms');
 Route::get('/contact', fn() => view('contact'))->name('contact');
 Route::get('/booking/confirmation/{booking}', [BookingController::class, 'confirmation'])->name('booking.confirmation');
+Route::get('/booking/payment', [BookingController::class, 'paymentPage'])->name('booking.payment');
 
 // ─── PayPal ───────────────────────────────────────────────────────
+Route::post('/paypal/order/create',  [PayPalController::class, 'createOrder'])->name('paypal.create-order');
+Route::post('/paypal/order/capture', [PayPalController::class, 'captureInline'])->name('paypal.capture-inline');
 Route::get('/payment/paypal', [PayPalController::class, 'redirect'])->name('paypal.redirect');
 Route::get('/payment/success', [PayPalController::class, 'success'])->name('paypal.success');
 Route::get('/payment/cancel', [PayPalController::class, 'cancel'])->name('paypal.cancel');

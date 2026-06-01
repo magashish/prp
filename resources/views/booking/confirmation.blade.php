@@ -23,16 +23,20 @@
                     </div>
 
                     @if($booking->stall_type === 'reserved')
-                        <div class="alert alert-info text-start">
-                            <i class="bi bi-printer-fill me-2"></i>A <strong>parking printout</strong> has been emailed to you. Please print and place it on your vehicle dashboard.
-                        </div>
+                    <div class="alert alert-info text-start shadow-sm" style="border-left: 5px solid #0f4c81;">
+                        <i class="bi bi-printer-fill me-2"></i>A <strong>parking printout</strong> has been emailed to you. Please print and place it on your vehicle dashboard.
+                    </div>
                     @else
-                        <div class="alert alert-warning text-start">
-                            <i class="bi bi-key-fill me-2"></i>Your <strong>parking access code</strong> will be emailed to you shortly once processed. You must present this pass to enter the garage.
-                        </div>
+                    <div class="alert alert-danger text-start shadow" style="border: 2px solid #dc3545; border-left: 8px solid #dc3545; font-size: 1.1rem; background-color: #f8d7da;">
+                        <i class="bi bi-exclamation-triangle-fill me-2 text-danger"></i><strong>ATTENTION:</strong> Your <strong>parking access code</strong> will be emailed to you shortly once processed. You must present this pass to enter the garage.
+                    </div>
                     @endif
 
-                    <a href="{{ route('home') }}" class="btn btn-primary mt-2">Make Another Booking</a>
+                    <div class="mt-4 d-flex justify-content-center gap-2">
+                        <a href="{{ route('home') }}" class="btn btn-outline-primary">Make Another Booking</a>
+                        <a href="{{ url('/') }}" class="btn btn-primary">Main Page</a>
+                    </div>
+
                 </div>
             </div>
         </div>

@@ -1,18 +1,15 @@
 <x-mail::message>
-# New Non-Reserved Booking – Action Required
+Hi,
 
-A new non-reserved parking booking has been received. Please review, process payment from the client (outside the system), then **send the parking access code to admin**.
+A new parking reservation has been made. Please prepare the parking code for the following reservations.
 
-<x-mail::panel>
-**Booking ID:** {{ $booking->booking_id }}
-**Customer Name:** {{ $booking->full_name }}
-**Customer Email:** {{ $booking->email }}
-**Customer Phone:** {{ $booking->phone_number }}
-**Check-in:** {{ $booking->check_in_date->format('l, F j, Y') }}
-**Check-out:** {{ $booking->check_out_date->format('l, F j, Y') }}
-</x-mail::panel>
+**RESERVATION DETAILS**
 
-Please send the parking access code to admin via email, phone, or text as soon as possible.
+| | |
+|:---|:---|
+| Booking #: | **{{ $booking->booking_id }}** |
+| Check-In Date: | **{{ $booking->check_in_date->format('m/d/Y') }}** |
+| Check-Out Date: | **{{ $booking->check_out_date->format('m/d/Y') }}** |
+| Parking Code: | |
 
-{{ config('app.name') }}
 </x-mail::message>

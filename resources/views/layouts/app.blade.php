@@ -47,15 +47,16 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark" style="background:#082B4D">
     <div class="container">
-        <a class="navbar-brand" href="{{ route('home') }}"><i class="bi bi-p-square-fill me-2"></i>Parking Stall Rental</a>
+        <a class="navbar-brand" href="{{ route('home') }}"> <img src="{{ asset('/images/prp.png') }}"> </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navMain">
             <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="https://blparkingrentals.com/">Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('home') }}">Book Now</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('cancellation.index') }}">Cancel Booking</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('contact') }}">Contact</a></li>
+                <li class="nav-item"><a class="nav-link" href="https://blparkingrentals.com/contact/">Contact</a></li>
             </ul>
         </div>
     </div>

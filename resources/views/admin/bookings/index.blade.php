@@ -35,7 +35,7 @@
             <thead class="table-light">
                 <tr>
                     <th>Booking ID</th><th>Name</th><th>Email</th><th>Stall</th>
-                    <th>Check-in</th><th>Check-out</th><th>Total</th><th>Pass</th><th>Actions</th>
+                    <th>Check-in</th><th>Check-out</th><th>Total</th><th>Pass</th><th>Status</th><th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -54,6 +54,7 @@
                         @else <span class="badge bg-secondary">N/A</span>
                         @endif
                     </td>
+                    <td>{{ $b->status }}</td>
                     <td>
                         <a href="{{ route('admin.bookings.show', $b) }}" class="btn btn-sm btn-outline-primary">View</a>
                         <a href="{{ route('admin.bookings.edit', $b) }}" class="btn btn-sm btn-outline-secondary">Edit</a>

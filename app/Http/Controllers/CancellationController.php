@@ -19,23 +19,16 @@ class CancellationController extends Controller
     public function lookup(Request $request)
     {
         $request->validate([
-            'identifier'    => 'required|string',
-            'check_in_date' => 'required|date',
-            'check_out_date'=> 'required|date',
-            'stall_type'    => 'required|in:reserved,non_reserved',
-            'email'         => 'required|email',
-        ]);
+    'identifier'    => 'required|string',
+    'check_in_date' => 'required|date',
+    'check_out_date'=> 'required|date',
+]);
 
-        $booking = Booking::where('status', 'active')
-            ->where('email', $request->email)
-            ->where('stall_type', $request->stall_type)
-            ->where('check_in_date', $request->check_in_date)
-            ->where('check_out_date', $request->check_out_date)
-            ->where(function ($q) use ($request) {
-                $q->where('booking_id', $request->identifier)
-                  ->orWhere('full_name', 'like', '%' . $request->identifier . '%');
-            })
-            ->first();
+$booking = Booking::where('status', 'active')
+    ->where('check_in_date', $request->check_in_date)
+    ->where('check_out_date', $request->check_out_date)
+    ->where('booking_id', $request->identifier)
+    ->first();
 
         if (!$booking) {
             return back()->withErrors([

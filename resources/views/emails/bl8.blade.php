@@ -1,17 +1,15 @@
 <x-mail::message>
-# Booking Cancellation Notice – {{ $booking->booking_id }}
+Hi Admin,
 
-A customer has cancelled their non-reserved parking booking.
+A parking reservation has been cancelled. See detail below.
 
-<x-mail::panel>
-**Booking ID:** {{ $booking->booking_id }}
-**Customer:** {{ $booking->full_name }}
-**Check-in:** {{ $booking->check_in_date->format('l, F j, Y') }}
-**Check-out:** {{ $booking->check_out_date->format('l, F j, Y') }}
-**Status:** {{ ucwords(str_replace('_', ' ', $booking->status)) }}
-</x-mail::panel>
+**BOOKING INFORMATION DETAILS**
 
-Please update your records accordingly.
+| | |
+|:---|:---|
+| Parking Code: | **{{ $booking->parking_code ?? 'N/A' }}** |
+| Check-In Date: | **{{ $booking->check_in_date->format('m/d/Y') }}** |
+| Check-Out Date: | **{{ $booking->check_out_date->format('m/d/Y') }}** |
 
-{{ config('app.name') }}
+Please review and process if necessary.
 </x-mail::message>

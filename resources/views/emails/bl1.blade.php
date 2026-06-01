@@ -1,22 +1,50 @@
 <x-mail::message>
-# Reserved Stall – Booking Confirmed
+Aloha {{ $booking->full_name }},
 
-Dear {{ $booking->full_name }},
+Thank you for choosing BL Rentals. Your parking reservation is confirmed.
 
-Your reserved parking stall has been confirmed. Please **print this email** and place it on your vehicle dashboard.
+**RESERVATION DETAILS**
 
-<x-mail::panel>
-**Booking ID:** {{ $booking->booking_id }}
-**Stall:** Reserved – Stall #{{ $booking->stall_number }}
-**Check-in:** {{ $booking->check_in_date->format('l, F j, Y') }}
-**Check-out:** {{ $booking->check_out_date->format('l, F j, Y') }}
-**Name:** {{ $booking->full_name }}
-**Total Paid:** ${{ number_format($booking->total_amount, 2) }}
-</x-mail::panel>
+| | |
+|:---|:---|
+| Booking #: | **{{ $booking->booking_id }}** |
+| Stall Type: | **{{ ucwords(str_replace('_', ' ', $booking->stall_type)) }}** |
+| Stall Number: | **{{ $booking->stall_number }}** |
+| Check-In Date: | **{{ $booking->check_in_date->format('m/d/Y') }}** |
+| Check-In Starts: | **12:00 AM** |
+| Check-Out Date: | **{{ $booking->check_out_date->format('m/d/Y') }}** |
+| Check-Out By: | **11:59 PM** |
+| Amount Paid: | **${{ number_format($booking->total_amount, 2) }}** |
+| Refund Plan: | **{{ $booking->refund_plan ? 'Yes (Purchased)' : 'No' }}** |
+| Location: | **Discovery Bay Condo Parking** |
+| | **1778 Ala Moana Blvd., Honolulu, HI** |
+| Entrance: | Accessible via Hobron Lane or the back street off Kaio'o Drive. |
 
-> **Important:** Print this confirmation and place it visibly on your vehicle dashboard. No access code is required for reserved stalls.
+---
 
-Thank you for booking with us!
+***IMPORTANT INFORMATION***
 
-{{ config('app.name') }}
+You do not need a Parking Code to enter. Attached is your Parking Pass Printout, which should be placed visibly on your vehicle dashboard.
+
+If you have any questions, please contact us.
+
+blrentals@gmail.com
+(000) 000-0000
+
+---
+
+***CANCELLATION PROCESS***
+
+*To cancel your reservation, please submit a cancellation request through our [website]({{ route('cancellation.index') }}) using your Booking ID#*
+
+---
+
+***REFUND POLICY***
+
+- *Full refunds are only provided if the Refund Protection Plan was purchased during booking.*
+- *Cancellation is not allowed on the check-in date*
+
+---
+
+*All booking dates and deadlines are based on Hawaii Standard Time (HST).*
 </x-mail::message>
