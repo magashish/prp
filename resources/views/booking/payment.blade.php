@@ -1,24 +1,6 @@
 @extends('layouts.app')
 @section('title', 'Secure Payment')
 
-@push('styles')
-<style>
-    .pay-section { background:#fff; border:1px solid #dee2e6; border-radius:8px; padding:24px; }
-    .card-field-wrap {
-        border:1px solid #ced4da; border-radius:6px; padding:10px 12px;
-        height:42px; background:#fff; transition:border-color .15s, box-shadow .15s;
-    }
-    .card-field-wrap.focused {
-        border-color:#0f4c81;
-        box-shadow:0 0 0 .2rem rgba(15,76,129,.2);
-    }
-    .divider { display:flex; align-items:center; gap:12px; color:#6c757d; font-size:.85rem; margin:20px 0; }
-    .divider::before, .divider::after { content:''; flex:1; border-top:1px solid #dee2e6; }
-    #paypal-button-container { min-height:45px; }
-    .payment-secure { color:#6c757d; font-size:.8rem; }
-</style>
-@endpush
-
 @section('content')
 <div class="container py-5">
     <div class="row justify-content-center g-4">

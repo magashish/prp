@@ -1,0 +1,93 @@
+/* ============================================================
+   Brand Variables & Bootstrap Overrides
+   ============================================================ */
+:root {
+    --bs-primary: #0f4c81;
+    --bs-primary-rgb: 15,76,129;
+    --bs-success: #02A38A;
+    --bs-success-rgb: 2,163,138;
+    --bs-link-color: #0f4c81;
+    --bs-link-hover-color: #082B4D;
+}
+
+.btn-primary { background-color:#0f4c81; border-color:#0f4c81; }
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active { background-color:#082B4D !important; border-color:#082B4D !important; }
+.btn-success { background-color:#02A38A; border-color:#02A38A; }
+.btn-success:hover, .btn-success:focus, .btn-success:active { background-color:#018a74 !important; border-color:#018a74 !important; }
+.btn-outline-primary { color:#0f4c81; border-color:#0f4c81; }
+.btn-outline-primary:hover { background-color:#0f4c81; border-color:#0f4c81; color:#fff; }
+.text-primary { color:#0f4c81 !important; }
+.text-success { color:#02A38A !important; }
+.bg-primary { background-color:#0f4c81 !important; }
+.bg-success { background-color:#02A38A !important; }
+.border-primary { border-color:#0f4c81 !important; }
+.alert-success { background-color:#d1f5ef; border-color:#02A38A; color:#015a4d; }
+.table-primary { background-color:#d6e8f7 !important; }
+.badge.bg-primary { background-color:#0f4c81 !important; }
+.badge.bg-success { background-color:#02A38A !important; }
+a { color:#0f4c81; }
+a:hover { color:#082B4D; }
+
+/* ============================================================
+   Base / Public Layout
+   ============================================================ */
+body { background-color: #f4f4f4; }
+.form-label { font-weight: 500; }
+.navbar-brand { font-weight: 700; }
+.hero-section { background: linear-gradient(135deg, #082B4D 0%, #0f4c81 100%); color: #fff; padding: 60px 0; }
+.price-badge { background: #0f4c81; color: #fff; border-radius: 8px; padding: 4px 10px; font-size: .85rem; }
+footer { background: #082B4D; color: #cdd8e3; }
+.booking-summary { background: #e0f4f1; border-left: 4px solid #0f4c81; border-radius: 4px; padding: 16px; }
+.step-indicator .step { width: 32px; height: 32px; border-radius: 50%; display:inline-flex; align-items:center; justify-content:center; font-weight:700; }
+.step-indicator .step.active { background:#0f4c81; color:#fff; }
+.step-indicator .step.done  { background:#02A38A; color:#fff; }
+.step-indicator .step.todo  { background:#dee2e6; color:#6c757d; }
+
+/* ============================================================
+   Admin Layout
+   ============================================================ */
+.sidebar { width:240px; min-height:100vh; background:#082B4D; position:fixed; top:0; left:0; z-index:100; }
+.sidebar .nav-link { color:#cdd8e3; padding: .6rem 1.2rem; border-radius:6px; margin:2px 8px; }
+.sidebar .nav-link:hover, .sidebar .nav-link.active { background:#0f4c81; color:#fff; }
+.sidebar .brand { padding:20px 16px 10px; color:#fff; font-size:1.1rem; font-weight:700; }
+.main-content { margin-left:240px; padding:24px; }
+.topbar { background:#fff; border-bottom:1px solid #dee2e6; padding:12px 24px; margin:-24px -24px 24px; display:flex; justify-content:space-between; align-items:center; }
+.badge-pass-required { background:#dc3545; }
+.badge-pass-sent { background:#02A38A; }
+.badge-pass-not-required { background:#6c757d; }
+
+/* ============================================================
+   Admin Login Page
+   ============================================================ */
+.admin-login-body { background: linear-gradient(135deg, #082B4D 0%, #0f4c81 100%); min-height: 100vh; display:flex; align-items:center; }
+
+/* ============================================================
+   Payment Page
+   ============================================================ */
+.pay-section { background:#fff; border:1px solid #dee2e6; border-radius:8px; padding:24px; }
+.card-field-wrap {
+    border:1px solid #ced4da; border-radius:6px; padding:10px 12px;
+    height:42px; background:#fff; transition:border-color .15s, box-shadow .15s;
+}
+.card-field-wrap.focused {
+    border-color:#0f4c81;
+    box-shadow:0 0 0 .2rem rgba(15,76,129,.2);
+}
+.divider { display:flex; align-items:center; gap:12px; color:#6c757d; font-size:.85rem; margin:20px 0; }
+.divider::before, .divider::after { content:''; flex:1; border-top:1px solid #dee2e6; }
+#paypal-button-container { min-height:45px; }
+.payment-secure { color:#6c757d; font-size:.8rem; }
+
+/* ============================================================
+   Admin Calendar
+   ============================================================ */
+.cal-grid { display:grid; grid-template-columns: repeat(7, 1fr); gap:4px; }
+.cal-header { text-align:center; font-weight:700; font-size:.75rem; text-transform:uppercase; padding:6px 0; color:#6c757d; }
+.cal-cell { min-height:90px; border:1px solid #e9ecef; border-radius:6px; padding:6px; background:#fff; font-size:.75rem; }
+.cal-cell.other-month { background:#f4f4f4; opacity:.5; }
+.cal-day-num { font-weight:700; color:#082B4D; margin-bottom:4px; }
+.event-s1 { background:#082B4D; color:#fff; border-radius:3px; padding:1px 5px; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.event-s2 { background:#6f42c1; color:#fff; border-radius:3px; padding:1px 5px; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.event-open { background:#02A38A; color:#fff; border-radius:3px; padding:1px 5px; }
+.event-open.warn { background:#fd7e14; }
+.legend-dot { width:12px; height:12px; border-radius:50%; display:inline-block; }

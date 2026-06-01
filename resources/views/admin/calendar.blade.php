@@ -1,20 +1,6 @@
 @extends('layouts.admin')
 @section('title', 'Calendar View')
 
-@push('styles')
-<style>
-    .cal-grid { display:grid; grid-template-columns: repeat(7, 1fr); gap:4px; }
-    .cal-header { text-align:center; font-weight:700; font-size:.75rem; text-transform:uppercase; padding:6px 0; color:#6c757d; }
-    .cal-cell { min-height:90px; border:1px solid #e9ecef; border-radius:6px; padding:6px; background:#fff; font-size:.75rem; }
-    .cal-cell.other-month { background:#f4f4f4; opacity:.5; }
-    .cal-day-num { font-weight:700; color:#082B4D; margin-bottom:4px; }
-    .event-s1 { background:#082B4D; color:#fff; border-radius:3px; padding:1px 5px; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .event-s2 { background:#6f42c1; color:#fff; border-radius:3px; padding:1px 5px; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .event-open { background:#02A38A; color:#fff; border-radius:3px; padding:1px 5px; }
-    .event-open.warn { background:#fd7e14; }
-    .legend-dot { width:12px; height:12px; border-radius:50%; display:inline-block; }
-</style>
-@endpush
 
 @section('content')
 <div class="card border-0 shadow-sm">
