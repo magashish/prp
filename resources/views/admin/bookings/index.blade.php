@@ -50,9 +50,9 @@
                     <td>{{ $b->check_out_date->format('M d, Y') }}</td>
                     <td>${{ number_format($b->total_amount, 2) }}</td>
                     <td>
-                        @if($b->pass_status === 'required') <span class="badge bg-danger">Required</span>
-                        @elseif($b->pass_status === 'sent') <span class="badge bg-success">Sent</span>
-                        @else <span class="badge bg-secondary">N/A</span>
+                        @if($b->pass_status === 'required') <span class="badge bg-danger fs-6 px-3 py-2">Required</span>
+                        @elseif($b->pass_status === 'sent') <span class="badge bg-success fs-6 px-3 py-2">Sent</span>
+                        @else <span class="badge bg-secondary fs-6 px-3 py-2">N/A</span>
                         @endif
                     </td>
                     <td>
