@@ -142,7 +142,7 @@ class BookingManageController extends Controller
         Mail::to(config('mail.parking_company_email'))->send(new BL8ParkingCompanyCancel($booking));
         Mail::to(config('mail.admin_email'))->send(new BL9AdminCancellationNotification($booking));
 
-        $route = $request->input('from') === 'past' ? 'admin.bookings.past' : 'admin.bookings.index';
-        return redirect()->route($route)->with('success', 'Booking cancelled and emails sent.');
+        return redirect()->route('admin.bookings.show', $booking)
+            ->with('success', 'Booking cancelled and notification emails sent.');
     }
 }
