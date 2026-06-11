@@ -40,7 +40,8 @@
             </thead>
             <tbody>
                 @forelse($bookings as $b)
-                <tr>
+                @php $isCancelled = in_array($b->status, ['cancelled_with_refund', 'cancelled_no_refund']); @endphp
+                <tr class="{{ $isCancelled ? 'table-danger' : '' }}">
                     <td><code>{{ $b->booking_id }}</code></td>
                     <td>{{ $b->full_name }}</td>
                     <td class="small">{{ $b->email }}</td>
@@ -54,10 +55,17 @@
                         @else <span class="badge bg-secondary">N/A</span>
                         @endif
                     </td>
-                    <td>{{ $b->status }}</td>
+                    <td>
+                        @if($b->status === 'active') <span class="badge bg-success">Active</span>
+                        @elseif($b->status === 'cancelled_with_refund') <span class="badge bg-warning text-dark">Cancelled</span> <span class="badge bg-danger">⚠ Refund Due</span>
+                        @else <span class="badge bg-secondary">Cancelled</span>
+                        @endif
+                    </td>
                     <td>
                         <a href="{{ route('admin.bookings.show', $b) }}" class="btn btn-sm btn-outline-primary">View</a>
+                        @if($b->status === 'active')
                         <a href="{{ route('admin.bookings.edit', $b) }}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                        @endif
                     </td>
                 </tr>
                 @empty

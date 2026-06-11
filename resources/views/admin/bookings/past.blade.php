@@ -25,7 +25,8 @@
             </thead>
             <tbody>
                 @forelse($bookings as $b)
-                <tr>
+                @php $isCancelled = in_array($b->status, ['cancelled_with_refund', 'cancelled_no_refund']); @endphp
+                <tr class="{{ $isCancelled ? 'table-danger' : '' }}">
                     <td><code>{{ $b->booking_id }}</code></td>
                     <td>{{ $b->full_name }}</td>
                     <td>{{ ucwords(str_replace('_',' ',$b->stall_type)) }}</td>
@@ -33,8 +34,8 @@
                     <td>{{ $b->check_out_date->format('M d, Y') }}</td>
                     <td>
                         @if($b->status === 'active') <span class="badge bg-success">Active</span>
-                        @elseif($b->status === 'cancelled_with_refund') <span class="badge bg-info">Cancelled + Refund</span>
-                        @else <span class="badge bg-danger">Cancelled</span>
+                        @elseif($b->status === 'cancelled_with_refund') <span class="badge bg-warning text-dark">Cancelled</span> <span class="badge bg-danger">⚠ Refund Due</span>
+                        @else <span class="badge bg-secondary">Cancelled</span>
                         @endif
                     </td>
                     <td>${{ number_format($b->total_amount, 2) }}</td>

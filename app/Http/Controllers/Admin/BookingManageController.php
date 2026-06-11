@@ -17,8 +17,7 @@ class BookingManageController extends Controller
     public function index(Request $request)
     {
         $today = Carbon::today()->toDateString();
-        $query = Booking::where('status', 'active')
-            ->where('check_out_date', '>=', $today);
+        $query = Booking::where('check_out_date', '>=', $today);
 
         if ($request->filled('search')) {
             $s = $request->search;

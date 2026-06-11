@@ -40,7 +40,7 @@ class Booking extends Model
     public static function generateBookingId(): string
     {
         do {
-            $id = 'BL-' . strtoupper(substr(uniqid(), -6));
+            $id = 'BL-' . strtoupper(substr(bin2hex(random_bytes(3)), 0, 4));
         } while (self::where('booking_id', $id)->exists());
 
         return $id;
