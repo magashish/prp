@@ -1,15 +1,17 @@
 @extends('layouts.admin')
 @section('title', 'Booking ' . $booking->booking_id)
 
+@php $isPast = $booking->check_out_date->lt(\Carbon\Carbon::today()); @endphp
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <a href="{{ route('admin.bookings.index') }}" class="btn btn-outline-secondary btn-sm">
-        <i class="bi bi-arrow-left me-1"></i>Back to Bookings
+    <a href="{{ $isPast ? route('admin.bookings.past') : route('admin.bookings.index') }}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left me-1"></i>Back to {{ $isPast ? 'Past' : '' }} Bookings
     </a>
-    
+
     <form action="{{ route('admin.bookings.destroy', $booking) }}" method="POST" onsubmit="return confirm('Permanently delete this booking?')">
-        @csrf 
+        @csrf
         @method('DELETE')
+        <input type="hidden" name="from" value="{{ $isPast ? 'past' : 'index' }}">
         <button class="btn btn-danger btn-sm">Delete</button>
     </form>
 </div>
@@ -65,6 +67,7 @@
                 @if($booking->status === 'active')
                 <form class="ms-auto" action="{{ route('admin.bookings.cancel', $booking) }}" method="POST" onsubmit="return confirm('Cancel this booking?')">
                     @csrf
+                    <input type="hidden" name="from" value="{{ $isPast ? 'past' : 'index' }}">
                     <button class="btn btn-warning btn-sm">Cancel Booking</button>
                 </form>
                 @endif

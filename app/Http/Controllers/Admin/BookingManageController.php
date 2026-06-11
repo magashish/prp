@@ -85,10 +85,11 @@ class BookingManageController extends Controller
         return redirect()->route('admin.bookings.show', $booking)->with('success', 'Booking updated.');
     }
 
-    public function destroy(Booking $booking)
+    public function destroy(Request $request, Booking $booking)
     {
         $booking->delete();
-        return redirect()->route('admin.bookings.index')->with('success', 'Booking deleted.');
+        $route = $request->input('from') === 'past' ? 'admin.bookings.past' : 'admin.bookings.index';
+        return redirect()->route($route)->with('success', 'Booking deleted.');
     }
 
     public function sendParkingCode(Request $request, Booking $booking)
@@ -116,6 +117,7 @@ class BookingManageController extends Controller
         Mail::to(config('mail.parking_company_email'))->send(new BL8ParkingCompanyCancel($booking));
         Mail::to(config('mail.admin_email'))->send(new BL9AdminCancellationNotification($booking));
 
-        return redirect()->route('admin.bookings.index')->with('success', 'Booking cancelled and emails sent.');
+        $route = $request->input('from') === 'past' ? 'admin.bookings.past' : 'admin.bookings.index';
+        return redirect()->route($route)->with('success', 'Booking cancelled and emails sent.');
     }
 }
