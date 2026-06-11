@@ -78,7 +78,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Phone Number</label>
-                                    <input type="tel" name="phone_number" class="form-control" required>
+                                    <input type="tel" name="phone_number" class="form-control" required pattern="[0-9\-\+\(\)\s]+" inputmode="tel" oninput="this.value=this.value.replace(/[^0-9\-\+\(\)\s]/g,'')">
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label">Email Address</label>
