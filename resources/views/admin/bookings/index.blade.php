@@ -63,7 +63,7 @@
                     <td>
                         <a href="{{ route('admin.bookings.show', $b) }}" class="btn btn-sm btn-outline-primary">View</a>
                         @if($b->status === 'active')
-                        <a href="{{ route('admin.bookings.edit', $b) }}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                        <a href="{{ route('admin.bookings.show', $b) }}?cancel=1" class="btn btn-sm btn-warning">Cancel</a>
                         @endif
                     </td>
                 </tr>

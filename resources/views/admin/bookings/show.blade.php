@@ -177,4 +177,13 @@
         </div>
     </div>
 </div>
+@push('scripts')
+@if(request('cancel') && $booking->status === 'active')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        new bootstrap.Modal(document.getElementById('cancelModal')).show();
+    });
+</script>
+@endif
+@endpush
 @endsection
