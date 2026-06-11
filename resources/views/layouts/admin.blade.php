@@ -14,8 +14,9 @@
     <div class="brand"><i class="bi bi-p-square-fill me-2"></i>Parking Admin</div>
     <nav class="nav flex-column mt-2">
         <a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a>
-        <a href="{{ route('admin.bookings.index') }}" class="nav-link {{ request()->routeIs('admin.bookings.*') && !request()->routeIs('admin.bookings.past') ? 'active' : '' }}"><i class="bi bi-table me-2"></i>Current Bookings</a>
+        <a href="{{ route('admin.bookings.index') }}" class="nav-link {{ request()->routeIs('admin.bookings.index') ? 'active' : '' }}"><i class="bi bi-table me-2"></i>Current Bookings</a>
         <a href="{{ route('admin.bookings.past') }}" class="nav-link {{ request()->routeIs('admin.bookings.past') ? 'active' : '' }}"><i class="bi bi-archive me-2"></i>Past Bookings</a>
+        <a href="{{ route('admin.bookings.cancelled') }}" class="nav-link {{ request()->routeIs('admin.bookings.cancelled') ? 'active' : '' }}"><i class="bi bi-x-circle me-2"></i>Cancelled Bookings</a>
         <a href="{{ route('admin.calendar') }}" class="nav-link {{ request()->routeIs('admin.calendar') ? 'active' : '' }}"><i class="bi bi-calendar3 me-2"></i>Calendar View</a>
     </nav>
     <div class="mt-auto p-3">

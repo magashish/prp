@@ -43,6 +43,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Bookings table
         Route::get('/bookings', [BookingManageController::class, 'index'])->name('bookings.index');
         Route::get('/bookings/past', [BookingManageController::class, 'past'])->name('bookings.past');
+        Route::get('/bookings/cancelled', [BookingManageController::class, 'cancelled'])->name('bookings.cancelled');
         Route::get('/bookings/{booking}', [BookingManageController::class, 'show'])->name('bookings.show');
         Route::get('/bookings/{booking}/edit', [BookingManageController::class, 'edit'])->name('bookings.edit');
         Route::put('/bookings/{booking}', [BookingManageController::class, 'update'])->name('bookings.update');

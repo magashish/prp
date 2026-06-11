@@ -60,6 +60,27 @@ class BookingManageController extends Controller
         return view('admin.bookings.past', compact('bookings'));
     }
 
+    public function cancelled(Request $request)
+    {
+        $query = Booking::whereIn('status', ['cancelled_with_refund', 'cancelled_no_refund']);
+
+        if ($request->filled('search')) {
+            $s = $request->search;
+            $query->where(function ($q) use ($s) {
+                $q->where('booking_id', 'like', "%$s%")
+                  ->orWhere('full_name', 'like', "%$s%");
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $bookings = $query->orderByDesc('updated_at')->paginate(20)->withQueryString();
+
+        return view('admin.bookings.cancelled', compact('bookings'));
+    }
+
     public function show(Booking $booking)
     {
         return view('admin.bookings.show', compact('booking'));
@@ -88,7 +109,12 @@ class BookingManageController extends Controller
     public function destroy(Request $request, Booking $booking)
     {
         $booking->delete();
-        $route = $request->input('from') === 'past' ? 'admin.bookings.past' : 'admin.bookings.index';
+        $from = $request->input('from');
+        $route = match($from) {
+            'past'      => 'admin.bookings.past',
+            'cancelled' => 'admin.bookings.cancelled',
+            default     => 'admin.bookings.index',
+        };
         return redirect()->route($route)->with('success', 'Booking deleted.');
     }
 
