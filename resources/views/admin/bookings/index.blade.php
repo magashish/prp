@@ -34,7 +34,7 @@
         <table class="table table-hover align-middle mb-0">
             <thead class="table-light">
                 <tr>
-                    <th>Booking ID</th><th>Name</th><th>Email</th><th>Stall</th>
+                    <th>Booking ID</th><th>Name</th><th>Stall</th>
                     <th>Check-in</th><th>Check-out</th><th>Total</th><th>Pass</th><th>Status</th><th>Actions</th>
                 </tr>
             </thead>
@@ -44,7 +44,6 @@
                 <tr class="{{ $isCancelled ? 'table-danger' : '' }}">
                     <td><code>{{ $b->booking_id }}</code></td>
                     <td>{{ $b->full_name }}</td>
-                    <td class="small">{{ $b->email }}</td>
                     <td>{{ ucwords(str_replace('_',' ',$b->stall_type)) }}{{ $b->stall_number ? ' #'.$b->stall_number : '' }}</td>
                     <td>{{ $b->check_in_date->format('M d, Y') }}</td>
                     <td>{{ $b->check_out_date->format('M d, Y') }}</td>
@@ -69,7 +68,7 @@
                     </td>
                 </tr>
                 @empty
-                <tr><td colspan="9" class="text-center text-muted py-4">No bookings found.</td></tr>
+                <tr><td colspan="8" class="text-center text-muted py-4">No bookings found.</td></tr>
                 @endforelse
             </tbody>
         </table>
