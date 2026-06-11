@@ -1,4 +1,13 @@
 /* ============================================================
+   Base Font Size (minimum 18px)
+   ============================================================ */
+html { font-size: 18px; }
+small, .small, .form-text, .text-muted,
+.fs-6, .fs-sm, .btn-sm, .table-sm td, .table-sm th,
+.badge, .navbar-text, .nav-link,
+pre, code { font-size: 1rem !important; }
+
+/* ============================================================
    Brand Variables & Bootstrap Overrides
    ============================================================ */
 :root {
