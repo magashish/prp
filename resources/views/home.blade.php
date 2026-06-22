@@ -185,17 +185,24 @@
 
 @push('scripts')
 <script>
-const today = new Date();
-const tomorrow = new Date(today);
-tomorrow.setDate(tomorrow.getDate() + 1);
-const minDate = tomorrow.toISOString().split('T')[0];
+// Always calculate dates based on Hawaii Standard Time (UTC-10, no DST)
+function hawaiiDateString(offsetDays = 0) {
+    const d = new Date(new Date().toLocaleString('en-US', { timeZone: 'Pacific/Honolulu' }));
+    d.setDate(d.getDate() + offsetDays);
+    return d.getFullYear() + '-' +
+        String(d.getMonth() + 1).padStart(2, '0') + '-' +
+        String(d.getDate()).padStart(2, '0');
+}
+
+const minDate = hawaiiDateString(1); // tomorrow in Hawaii
 document.getElementById('check_in_date').min = minDate;
 document.getElementById('check_out_date').min = minDate;
 
 document.getElementById('check_in_date').addEventListener('change', function () {
-    const cin = new Date(this.value);
-    cin.setDate(cin.getDate() + 1);
-    document.getElementById('check_out_date').min = cin.toISOString().split('T')[0];
+    const [y, m, d] = this.value.split('-').map(Number);
+    const cin = new Date(y, m - 1, d + 1); // next day, local arithmetic (no UTC shift)
+    document.getElementById('check_out_date').min =
+        cin.getFullYear() + '-' + String(cin.getMonth() + 1).padStart(2, '0') + '-' + String(cin.getDate()).padStart(2, '0');
     resetAvailability();
 });
 
