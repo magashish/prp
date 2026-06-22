@@ -56,7 +56,7 @@
                     </td>
                     <td>
                         @if($b->status === 'active') <span class="badge bg-success">Active</span>
-                        @elseif($b->status === 'cancelled_with_refund') <span class="badge bg-warning text-dark">Cancelled</span> <span class="badge bg-danger">⚠ Refund Due</span>
+                        @elseif($b->status === 'cancelled_with_refund') <span class="badge bg-warning text-dark">Cancelled</span> <span class="badge bg-danger">⚠</span>
                         @else <span class="badge bg-secondary">Cancelled</span>
                         @endif
                     </td>
