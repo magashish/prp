@@ -40,7 +40,7 @@
                     <td>{{ $b->check_out_date->format('M d, Y') }}</td>
                     <td>
                         @if($b->status === 'cancelled_with_refund')
-                            <span class="badge bg-info">Cancelled + Refund</span>
+                            <span class="badge" style="background:#082B4D">Cancelled + Refund</span>
                         @else
                             <span class="badge bg-danger">Cancelled</span>
                         @endif
