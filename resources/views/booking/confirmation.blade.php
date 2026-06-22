@@ -27,7 +27,7 @@
                         <i class="bi bi-printer-fill me-2"></i>A <strong>parking printout</strong> has been emailed to you. Please print and place it on your vehicle dashboard.
                     </div>
                     @else
-                    <div class="alert alert-danger text-start shadow" style="border: 2px solid #dc3545; border-left: 8px solid #dc3545; font-size: 1.1rem; background-color: #f8d7da;">
+                    <div class="alert text-start shadow" style="border: 2px solid #dc3545; border-left: 8px solid #dc3545; font-size: 1.1rem; background-color: #fff;">
                         <i class="bi bi-exclamation-triangle-fill me-2 text-danger"></i><strong>ATTENTION:</strong> Your <strong>parking access code</strong> will be emailed to you shortly once processed. You must present this pass to enter the garage.
                     </div>
                     @endif
