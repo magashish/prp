@@ -246,7 +246,7 @@ document.getElementById('availabilityForm').addEventListener('submit', async fun
         updateTotal();
     } else {
         resultDiv.innerHTML = `
-            <div class="alert alert-warning mb-2"><i class="bi bi-exclamation-triangle-fill me-1"></i>${data.message}</div>
+            <div class="alert alert-danger mb-2"><i class="bi bi-exclamation-triangle-fill me-1"></i>${data.message}</div>
             <div class="d-flex gap-2">
                 <button type="button" class="btn btn-outline-primary btn-sm flex-fill mb-2" onclick="selectAnotherDate()">
                     <i class="bi bi-calendar3 me-1"></i> Select Another Date
