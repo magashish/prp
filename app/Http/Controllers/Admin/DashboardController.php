@@ -37,7 +37,7 @@ class DashboardController extends Controller
 
         $bookings = Booking::where('status', 'active')
             ->where('check_in_date', '<=', $endOfMonth->toDateString())
-            ->where('check_out_date', '>', $startOfMonth->toDateString())
+            ->where('check_out_date', '>=', $startOfMonth->toDateString())
             ->get(['stall_type', 'stall_number', 'full_name', 'check_in_date', 'check_out_date', 'booking_id']);
 
         $days = [];
@@ -49,7 +49,7 @@ class DashboardController extends Controller
             $openCount = 0;
 
             foreach ($bookings as $b) {
-                if ($b->check_in_date->toDateString() <= $dateStr && $b->check_out_date->toDateString() > $dateStr) {
+                if ($b->check_in_date->toDateString() <= $dateStr && $b->check_out_date->toDateString() >= $dateStr) {
                     if ($b->stall_type === 'reserved') {
                         if ($b->stall_number == 1) $stall1 = $b->full_name;
                         if ($b->stall_number == 2) $stall2 = $b->full_name;
