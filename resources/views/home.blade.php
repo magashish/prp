@@ -101,7 +101,7 @@
                             <div class="form-check mt-3">
                                 <input class="form-check-input" type="checkbox" name="terms" id="terms" value="1" required>
                                 <label class="form-check-label" for="terms">
-                                    I agree to the <a href="{{ route('terms') }}" target="_blank">Terms &amp; Conditions</a>
+                                    I agree to the <a href="https://blparkingrentals.com/terms-condition/" target="_blank">Terms &amp; Conditions</a>
                                 </label>
                             </div>
 

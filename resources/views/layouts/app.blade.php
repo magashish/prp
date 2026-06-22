@@ -42,8 +42,8 @@
 <footer class="mt-5 py-4">
     <div class="container text-center">
         <p class="mb-1">&copy; {{ date('Y') }} Parking Stall Rental. All rights reserved.</p>
-        <a href="{{ route('terms') }}" class="text-light small me-3">Terms &amp; Conditions</a>
-        <a href="{{ route('contact') }}" class="text-light small">Contact Us</a>
+        <a href="https://blparkingrentals.com/terms-condition/" class="text-light small me-3">Terms &amp; Conditions</a>
+        <a href="https://blparkingrentals.com/contact/" class="text-light small">Contact Us</a>
     </div>
 </footer>
 
