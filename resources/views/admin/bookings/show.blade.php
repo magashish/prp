@@ -57,7 +57,7 @@
                     <tr><th>Check-out</th><td>{{ $booking->check_out_date->format('M d, Y') }}</td></tr>
                     <tr><th>Subtotal</th><td>${{ number_format($booking->subtotal, 2) }}</td></tr>
                     <tr><th>Tax</th><td>${{ number_format($booking->tax, 2) }}</td></tr>
-                    <tr><th>Service Fee</th><td>${{ number_format($booking->service_fee, 2) }}</td></tr>
+                    <tr><th>Parking Reservation Fee</th><td>${{ number_format($booking->service_fee, 2) }}</td></tr>
                     <tr><th>Total Paid</th><td class="fw-bold">${{ number_format($booking->total_amount, 2) }}</td></tr>
                     <tr><th>Refund Plan</th><td>{!! $booking->refund_plan ? '<span class="badge bg-success">Yes – Eligible</span>' : 'No' !!}</td></tr>
                     <tr><th>PayPal TxID</th><td><small>{{ $booking->paypal_transaction_id ?? '—' }}</small></td></tr>

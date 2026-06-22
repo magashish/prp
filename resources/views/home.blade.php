@@ -87,11 +87,18 @@
                             </div>
 
                             <div id="refundPlanSection" class="mt-3 p-3 border rounded bg-light">
-                                <div class="form-check">
+                                <div class="form-check mb-2">
                                     <input class="form-check-input" type="checkbox" name="refund_plan" value="1" id="refundPlan">
                                     <label class="form-check-label" for="refundPlan">
                                         <strong>Add Refund Protection Plan – $25.00</strong>
                                         <small class="d-block text-muted">Receive a full refund if you need to cancel.</small>
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="international" value="1" id="internationalCard">
+                                    <label class="form-check-label" for="internationalCard">
+                                        <strong>I am paying with an international card</strong>
+                                        <small class="d-block text-muted">A 4% Parking Reservation Fee applies (instead of 3%) for international cards.</small>
                                     </label>
                                 </div>
                             </div>
@@ -263,6 +270,7 @@ document.getElementById('availabilityForm').addEventListener('submit', async fun
 });
 
 document.getElementById('refundPlan')?.addEventListener('change', updateTotal);
+document.getElementById('internationalCard')?.addEventListener('change', updateTotal);
 
 function selectAnotherDate() {
     document.getElementById('check_in_date').value = '';
@@ -279,18 +287,21 @@ function changeStallType() {
 function updateTotal() {
     if (!availData) return;
     const hasRefund = document.getElementById('refundPlan').checked;
+    const isIntl    = document.getElementById('internationalCard').checked;
+    const feeRate   = isIntl ? availData.fee_rate_intl : availData.fee_rate_std;
+    const feePct    = Math.round(feeRate * 100);
     const baseSubtotal = parseFloat(availData.subtotal);
     const subtotal  = baseSubtotal + (hasRefund ? refundPlanCost : 0);
     const tax       = Math.round(subtotal * 0.045 * 100) / 100;
-    const svcFee    = Math.round((subtotal + tax) * 0.03 * 100) / 100;
-    const total     = subtotal + tax + svcFee;
+    const resvFee   = Math.round((subtotal + tax) * feeRate * 100) / 100;
+    const total     = subtotal + tax + resvFee;
     const fmt = v => v.toFixed(2);
     document.getElementById('totalDisplay').innerHTML = `
         <table class="table table-sm small mb-0">
             ${hasRefund ? `<tr><td>Refund Protection Plan</td><td class="text-end">$${fmt(refundPlanCost)}</td></tr>` : ''}
             <tr><td>Subtotal</td><td class="text-end">$${fmt(subtotal)}</td></tr>
             <tr><td>Tax (4.5%)</td><td class="text-end">$${fmt(tax)}</td></tr>
-            <tr><td>Service Fee (3%)</td><td class="text-end">$${fmt(svcFee)}</td></tr>
+            <tr><td>Parking Reservation Fee (${feePct}%)</td><td class="text-end">$${fmt(resvFee)}</td></tr>
             <tr class="table-primary fw-bold"><td>Total Due</td><td class="text-end">$${fmt(total)}</td></tr>
         </table>`;
 }

@@ -8,13 +8,14 @@ use Illuminate\Http\Request;
 
 class BookingController extends Controller
 {
-    const RESERVED_PRICE     = 45.00;
-    const NON_RESERVED_PRICE = 35.00;
-    const REFUND_PLAN_PRICE  = 25.00;
-    const TAX_RATE           = 0.045;
-    const SERVICE_FEE_RATE   = 0.03;
-    const RESERVED_CAPACITY  = 2;
-    const NON_RESERVED_CAP   = 75;
+    const RESERVED_PRICE          = 45.00;
+    const NON_RESERVED_PRICE      = 35.00;
+    const REFUND_PLAN_PRICE       = 25.00;
+    const TAX_RATE                = 0.045;
+    const RESERVATION_FEE_RATE    = 0.03;
+    const RESERVATION_FEE_INTL    = 0.04;
+    const RESERVED_CAPACITY       = 2;
+    const NON_RESERVED_CAP        = 75;
 
     public function index()
     {
@@ -63,11 +64,9 @@ class BookingController extends Controller
             $subtotal    = $days * self::NON_RESERVED_PRICE;
         }
 
-        $tax        = round($subtotal * self::TAX_RATE, 2);
-        $serviceFee = round(($subtotal + $tax) * self::SERVICE_FEE_RATE, 2);
-        $total      = $subtotal + $tax + $serviceFee;
+        $tax = round($subtotal * self::TAX_RATE, 2);
 
-        // Store in session for checkout
+        // Store base values in session (reservation fee recalculated in storeSession with intl flag)
         session([
             'booking_pending' => [
                 'stall_type'    => $stallType,
@@ -77,21 +76,19 @@ class BookingController extends Controller
                 'days'          => $days,
                 'subtotal'      => $subtotal,
                 'tax'           => $tax,
-                'service_fee'   => $serviceFee,
-                'total'         => $total,
             ]
         ]);
 
         return response()->json([
-            'available'   => true,
-            'stall_type'  => $stallType,
-            'stall_number'=> $stallNumber,
-            'days'        => $days,
-            'subtotal'    => number_format($subtotal, 2),
-            'tax'         => number_format($tax, 2),
-            'service_fee' => number_format($serviceFee, 2),
-            'total'       => number_format($total, 2),
-            'refund_plan' => number_format(self::REFUND_PLAN_PRICE, 2),
+            'available'        => true,
+            'stall_type'       => $stallType,
+            'stall_number'     => $stallNumber,
+            'days'             => $days,
+            'subtotal'         => number_format($subtotal, 2),
+            'tax'              => number_format($tax, 2),
+            'refund_plan'      => number_format(self::REFUND_PLAN_PRICE, 2),
+            'fee_rate_std'     => self::RESERVATION_FEE_RATE,
+            'fee_rate_intl'    => self::RESERVATION_FEE_INTL,
         ]);
     }
 
@@ -121,11 +118,12 @@ class BookingController extends Controller
     public function storeSession(Request $request)
     {
         $request->validate([
-            'full_name'   => 'required|string|max:255',
-            'phone_number'=> 'required|string|max:30',
-            'email'       => 'required|email',
-            'refund_plan' => 'nullable|boolean',
-            'terms'       => 'accepted',
+            'full_name'        => 'required|string|max:255',
+            'phone_number'     => 'required|string|max:30',
+            'email'            => 'required|email',
+            'refund_plan'      => 'nullable|boolean',
+            'international'    => 'nullable|boolean',
+            'terms'            => 'accepted',
         ]);
 
         $pending = session('booking_pending');
@@ -133,22 +131,26 @@ class BookingController extends Controller
             return redirect()->route('home')->with('error', 'Session expired. Please start again.');
         }
 
-        $refundPlan  = $request->boolean('refund_plan');
-        $refundCost  = $refundPlan ? self::REFUND_PLAN_PRICE : 0;
-        $subtotal    = $pending['subtotal'] + $refundCost;
-        $tax         = round($subtotal * self::TAX_RATE, 2);
-        $serviceFee  = round(($subtotal + $tax) * self::SERVICE_FEE_RATE, 2);
-        $total       = $subtotal + $tax + $serviceFee;
+        $refundPlan    = $request->boolean('refund_plan');
+        $isIntl        = $request->boolean('international');
+        $feeRate       = $isIntl ? self::RESERVATION_FEE_INTL : self::RESERVATION_FEE_RATE;
+        $refundCost    = $refundPlan ? self::REFUND_PLAN_PRICE : 0;
+        $subtotal      = $pending['subtotal'] + $refundCost;
+        $tax           = round($subtotal * self::TAX_RATE, 2);
+        $reservationFee = round(($subtotal + $tax) * $feeRate, 2);
+        $total         = $subtotal + $tax + $reservationFee;
 
-        session()->put('booking_pending.full_name',    $request->full_name);
-        session()->put('booking_pending.phone_number', $request->phone_number);
-        session()->put('booking_pending.email',        $request->email);
-        session()->put('booking_pending.refund_plan',  $refundPlan);
-        session()->put('booking_pending.refund_cost',  $refundCost);
-        session()->put('booking_pending.subtotal',     $subtotal);
-        session()->put('booking_pending.tax',          $tax);
-        session()->put('booking_pending.service_fee',  $serviceFee);
-        session()->put('booking_pending.total',        $total);
+        session()->put('booking_pending.full_name',       $request->full_name);
+        session()->put('booking_pending.phone_number',    $request->phone_number);
+        session()->put('booking_pending.email',           $request->email);
+        session()->put('booking_pending.refund_plan',     $refundPlan);
+        session()->put('booking_pending.refund_cost',     $refundCost);
+        session()->put('booking_pending.international',   $isIntl);
+        session()->put('booking_pending.fee_rate',        $feeRate);
+        session()->put('booking_pending.subtotal',        $subtotal);
+        session()->put('booking_pending.tax',             $tax);
+        session()->put('booking_pending.service_fee',     $reservationFee);
+        session()->put('booking_pending.total',           $total);
 
         return redirect()->route('booking.payment');
     }

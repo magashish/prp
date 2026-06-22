@@ -42,15 +42,9 @@
                             <td class="text-end">${{ number_format($pending['tax'], 2) }}</td>
                         </tr>
                         <tr>
-                            <td class="text-muted">Service Fee (3%)</td>
+                            <td class="text-muted">Parking Reservation Fee ({{ round(($pending['fee_rate'] ?? 0.03) * 100) }}%)</td>
                             <td class="text-end">${{ number_format($pending['service_fee'], 2) }}</td>
                         </tr>
-                        @if(!empty($pending['refund_plan']) && $pending['refund_plan'])
-                        <tr>
-                            <td class="text-muted">Refund Protection</td>
-                            <td class="text-end">$25.00</td>
-                        </tr>
-                        @endif
                         <tr class="table-primary">
                             <td class="fw-bold">Total Due</td>
                             <td class="text-end fw-bold">${{ number_format($pending['total'], 2) }}</td>

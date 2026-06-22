@@ -25,10 +25,7 @@
                             <div class="col-6">${{ number_format($pending['subtotal'], 2) }}</div>
                             <div class="col-6"><strong>Tax (4.5%):</strong></div>
                             <div class="col-6">${{ number_format($pending['tax'], 2) }}</div>
-                            <div class="col-6"><strong>Service Fee (3%):</strong></div>
-                            <div class="col-6">${{ number_format($pending['service_fee'], 2) }}</div>
-                            <div class="col-6 fw-bold"><strong>Total:</strong></div>
-                            <div class="col-6 fw-bold text-primary">${{ number_format($pending['total'], 2) }}</div>
+                            <div class="col-12 text-muted small">Final total (including Parking Reservation Fee) shown at payment.</div>
                         </div>
                     </div>
 
@@ -50,11 +47,18 @@
                         </div>
 
                         <div class="mt-3 p-3 border rounded bg-light">
-                            <div class="form-check">
+                            <div class="form-check mb-2">
                                 <input class="form-check-input" type="checkbox" name="refund_plan" value="1" id="refundPlan">
                                 <label class="form-check-label" for="refundPlan">
                                     <strong>Add Refund Protection Plan – $25.00</strong>
                                     <small class="d-block text-muted">Receive a full refund if you need to cancel.</small>
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="international" value="1" id="internationalCard">
+                                <label class="form-check-label" for="internationalCard">
+                                    <strong>I am paying with an international card</strong>
+                                    <small class="d-block text-muted">A 4% Parking Reservation Fee applies (instead of 3%) for international cards.</small>
                                 </label>
                             </div>
                         </div>
