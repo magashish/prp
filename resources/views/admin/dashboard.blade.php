@@ -3,27 +3,29 @@
 
 @section('content')
 <div class="row g-4 mb-4">
+    {{-- Active Bookings - highlighted blue --}}
     <div class="col-md-3">
-        <div class="card border-0 shadow-sm text-center p-3">
-            <div class="text-primary fs-1 fw-bold">{{ $totalActive }}</div>
+        <div class="card border-0 shadow-sm text-center p-3" style="background:#dce8f7;">
+            <div class="fs-1 fw-bold" style="color:#0f4c81;">{{ $totalActive }}</div>
             <div class="text-muted small">Active Bookings</div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="card border-0 shadow-sm text-center p-3">
-            <div class="text-info fs-1 fw-bold">{{ $reservedCount }}</div>
+            <div class="text-dark fs-1 fw-bold">{{ $reservedCount }}</div>
             <div class="text-muted small">Reserved Stalls</div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="card border-0 shadow-sm text-center p-3">
-            <div class="text-success fs-1 fw-bold">{{ $nonResCount }}</div>
+            <div class="text-dark fs-1 fw-bold">{{ $nonResCount }}</div>
             <div class="text-muted small">Non-Reserved</div>
         </div>
     </div>
+    {{-- Pending Parking Pass - highlighted red --}}
     <div class="col-md-3">
-        <div class="card border-0 shadow-sm text-center p-3">
-            <div class="text-danger fs-1 fw-bold">{{ $pendingPass }}</div>
+        <div class="card border-0 shadow-sm text-center p-3" style="background:#fde8e8;">
+            <div class="fs-1 fw-bold text-danger">{{ $pendingPass }}</div>
             <div class="text-muted small">Pending Parking Pass</div>
         </div>
     </div>
