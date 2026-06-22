@@ -64,7 +64,7 @@ class BookingController extends Controller
         }
 
         $tax        = round($subtotal * self::TAX_RATE, 2);
-        $serviceFee = round($subtotal * self::SERVICE_FEE_RATE, 2);
+        $serviceFee = round(($subtotal + $tax) * self::SERVICE_FEE_RATE, 2);
         $total      = $subtotal + $tax + $serviceFee;
 
         // Store in session for checkout
@@ -135,13 +135,19 @@ class BookingController extends Controller
 
         $refundPlan  = $request->boolean('refund_plan');
         $refundCost  = $refundPlan ? self::REFUND_PLAN_PRICE : 0;
-        $total       = $pending['subtotal'] + $pending['tax'] + $pending['service_fee'] + $refundCost;
+        $subtotal    = $pending['subtotal'] + $refundCost;
+        $tax         = round($subtotal * self::TAX_RATE, 2);
+        $serviceFee  = round(($subtotal + $tax) * self::SERVICE_FEE_RATE, 2);
+        $total       = $subtotal + $tax + $serviceFee;
 
         session()->put('booking_pending.full_name',    $request->full_name);
         session()->put('booking_pending.phone_number', $request->phone_number);
         session()->put('booking_pending.email',        $request->email);
         session()->put('booking_pending.refund_plan',  $refundPlan);
         session()->put('booking_pending.refund_cost',  $refundCost);
+        session()->put('booking_pending.subtotal',     $subtotal);
+        session()->put('booking_pending.tax',          $tax);
+        session()->put('booking_pending.service_fee',  $serviceFee);
         session()->put('booking_pending.total',        $total);
 
         return redirect()->route('booking.payment');

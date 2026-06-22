@@ -279,15 +279,19 @@ function changeStallType() {
 function updateTotal() {
     if (!availData) return;
     const hasRefund = document.getElementById('refundPlan').checked;
-    const refund = hasRefund ? refundPlanCost : 0;
-    const total = parseFloat(availData.total) + refund;
+    const baseSubtotal = parseFloat(availData.subtotal);
+    const subtotal  = baseSubtotal + (hasRefund ? refundPlanCost : 0);
+    const tax       = Math.round(subtotal * 0.045 * 100) / 100;
+    const svcFee    = Math.round((subtotal + tax) * 0.03 * 100) / 100;
+    const total     = subtotal + tax + svcFee;
+    const fmt = v => v.toFixed(2);
     document.getElementById('totalDisplay').innerHTML = `
         <table class="table table-sm small mb-0">
-            <tr><td>Subtotal</td><td class="text-end">$${availData.subtotal}</td></tr>
-            <tr><td>Tax (4.5%)</td><td class="text-end">$${availData.tax}</td></tr>
-            <tr><td>Service Fee (3%)</td><td class="text-end">$${availData.service_fee}</td></tr>
-            ${hasRefund ? `<tr><td>Refund Protection Plan</td><td class="text-end">$${refundPlanCost.toFixed(2)}</td></tr>` : ''}
-            <tr class="table-primary fw-bold"><td>Total Due</td><td class="text-end">$${total.toFixed(2)}</td></tr>
+            ${hasRefund ? `<tr><td>Refund Protection Plan</td><td class="text-end">$${fmt(refundPlanCost)}</td></tr>` : ''}
+            <tr><td>Subtotal</td><td class="text-end">$${fmt(subtotal)}</td></tr>
+            <tr><td>Tax (4.5%)</td><td class="text-end">$${fmt(tax)}</td></tr>
+            <tr><td>Service Fee (3%)</td><td class="text-end">$${fmt(svcFee)}</td></tr>
+            <tr class="table-primary fw-bold"><td>Total Due</td><td class="text-end">$${fmt(total)}</td></tr>
         </table>`;
 }
 </script>
