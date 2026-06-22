@@ -6,6 +6,7 @@ use App\Models\Booking;
 use App\Mail\BL7CancellationConfirmation;
 use App\Mail\BL8ParkingCompanyCancel;
 use App\Mail\BL9AdminCancellationNotification;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
@@ -36,6 +37,14 @@ $booking = Booking::where('status', 'active')
             ])->withInput();
         }
 
+        // Cancellation not allowed on or after the check-in date (Hawaii time)
+        $todayHawaii = Carbon::now('Pacific/Honolulu')->startOfDay();
+        if ($todayHawaii->gte(Carbon::parse($booking->check_in_date)->startOfDay())) {
+            return back()->withErrors([
+                'identifier' => 'Cancellations are not allowed on or after the check-in date. Please contact us directly for assistance.',
+            ])->withInput();
+        }
+
         session(['cancellation_booking_id' => $booking->id]);
 
         return view('cancellation.review', compact('booking'));
@@ -49,6 +58,12 @@ $booking = Booking::where('status', 'active')
         }
 
         $booking = Booking::findOrFail($bookingDbId);
+
+        $todayHawaii = Carbon::now('Pacific/Honolulu')->startOfDay();
+        if ($todayHawaii->gte(Carbon::parse($booking->check_in_date)->startOfDay())) {
+            session()->forget('cancellation_booking_id');
+            return redirect()->route('cancellation.index')->with('error', 'Cancellations are not allowed on or after the check-in date. Please contact us directly for assistance.');
+        }
 
         if ($booking->refund_plan) {
             $booking->status = 'cancelled_with_refund';
