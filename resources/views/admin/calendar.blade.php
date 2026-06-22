@@ -72,7 +72,7 @@ function renderCalendar(days, month, year) {
         if (info.stall1)      html += `<div class="event-s1" title="${info.stall1}">S1 – ${info.stall1.split(' ')[0]}</div>`;
         if (info.stall2)      html += `<div class="event-s2" title="${info.stall2}">S2 – ${info.stall2.split(' ')[0]}</div>`;
         const open = info.open_booked || 0;
-        const cls  = open >= 60 ? 'warn' : '';
+        const cls  = open >= 60 ? 'warn' : (open === 0 ? 'zero' : '');
         html += `<div class="event-open ${cls}">Open – ${open}</div>`;
         cell.innerHTML = html;
         body.appendChild(cell);
