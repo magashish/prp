@@ -240,18 +240,18 @@ document.getElementById('availabilityForm').addEventListener('submit', async fun
     e.preventDefault();
 
     // Client-side date guard (catches typed dates that bypass the min attribute)
-    const resultDiv = document.getElementById('availabilityResult');
+    const availResultDiv = document.getElementById('availabilityResult');
     const cin  = checkInEl.value;
     const cout = checkOutEl.value;
     if (!cin || cin < minDate) {
-        resultDiv.classList.remove('d-none');
-        resultDiv.innerHTML = `<div class="alert alert-danger"><i class="bi bi-exclamation-triangle-fill me-1"></i>Check-in date must be at least tomorrow (${minDate}).</div>`;
+        availResultDiv.classList.remove('d-none');
+        availResultDiv.innerHTML = `<div class="alert alert-danger"><i class="bi bi-exclamation-triangle-fill me-1"></i>Check-in date must be at least tomorrow (${minDate}).</div>`;
         checkInEl.value = minDate;
         return;
     }
     if (!cout || cout <= cin) {
-        resultDiv.classList.remove('d-none');
-        resultDiv.innerHTML = `<div class="alert alert-danger"><i class="bi bi-exclamation-triangle-fill me-1"></i>Check-out date must be after the check-in date.</div>`;
+        availResultDiv.classList.remove('d-none');
+        availResultDiv.innerHTML = `<div class="alert alert-danger"><i class="bi bi-exclamation-triangle-fill me-1"></i>Check-out date must be after the check-in date.</div>`;
         return;
     }
 
@@ -268,14 +268,14 @@ document.getElementById('availabilityForm').addEventListener('submit', async fun
     const data = await res.json();
     availData = data;
 
-    resultDiv.classList.remove('d-none');
+    availResultDiv.classList.remove('d-none');
 
     if (data.available) {
-        resultDiv.innerHTML = `<div class="alert alert-success"><i class="bi bi-check-circle-fill me-1"></i><strong>Available!</strong> ${data.days} day(s) selected.</div>`;
+        availResultDiv.innerHTML = `<div class="alert alert-success"><i class="bi bi-check-circle-fill me-1"></i><strong>Available!</strong> ${data.days} day(s) selected.</div>`;
         document.getElementById('checkoutSection').classList.remove('d-none');
         updateTotal();
     } else {
-        resultDiv.innerHTML = `
+        availResultDiv.innerHTML = `
             <div class="alert alert-danger mb-2"><i class="bi bi-exclamation-triangle-fill me-1"></i>${data.message}</div>
             <div class="d-flex gap-2">
                 <button type="button" class="btn btn-outline-primary btn-sm flex-fill mb-2" onclick="selectAnotherDate()">
