@@ -268,7 +268,6 @@ document.getElementById('availabilityForm').addEventListener('submit', async fun
     const data = await res.json();
     availData = data;
 
-    const resultDiv = document.getElementById('availabilityResult');
     resultDiv.classList.remove('d-none');
 
     if (data.available) {
