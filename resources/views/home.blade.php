@@ -202,25 +202,32 @@ function hawaiiDateString(offsetDays = 0) {
 }
 
 const minDate = hawaiiDateString(1); // tomorrow in Hawaii
-document.getElementById('check_in_date').min = minDate;
-document.getElementById('check_out_date').min = minDate;
+const checkInEl  = document.getElementById('check_in_date');
+const checkOutEl = document.getElementById('check_out_date');
+checkInEl.min  = minDate;
+checkInEl.value = minDate;          // default to tomorrow so picker opens there
+checkOutEl.min  = minDate;
 
-document.getElementById('check_in_date').addEventListener('change', function () {
+checkInEl.addEventListener('change', function () {
+    if (!this.value) return;
     const [y, m, d] = this.value.split('-').map(Number);
-    const cin = new Date(y, m - 1, d + 1); // next day, local arithmetic (no UTC shift)
-    document.getElementById('check_out_date').min =
-        cin.getFullYear() + '-' + String(cin.getMonth() + 1).padStart(2, '0') + '-' + String(cin.getDate()).padStart(2, '0');
+    const cin = new Date(y, m - 1, d + 1);
+    const newMin = cin.getFullYear() + '-' + String(cin.getMonth() + 1).padStart(2, '0') + '-' + String(cin.getDate()).padStart(2, '0');
+    checkOutEl.min = newMin;
+    if (checkOutEl.value && checkOutEl.value <= this.value) {
+        checkOutEl.value = newMin;
+    }
     resetAvailability();
 });
 
-document.getElementById('check_out_date').addEventListener('change', resetAvailability);
+checkOutEl.addEventListener('change', resetAvailability);
 document.querySelectorAll('input[name="stall_type"]').forEach(el => el.addEventListener('change', resetAvailability));
 
 function resetAvailability() {
     availData = null;
-    const resultDiv = document.getElementById('availabilityResult');
-    resultDiv.classList.add('d-none');
-    resultDiv.innerHTML = '';
+    const rd = document.getElementById('availabilityResult');
+    rd.classList.add('d-none');
+    rd.innerHTML = '';
     document.getElementById('checkoutSection').classList.add('d-none');
     document.getElementById('totalDisplay').innerHTML = '';
 }
@@ -231,6 +238,23 @@ let availData = null;
 
 document.getElementById('availabilityForm').addEventListener('submit', async function (e) {
     e.preventDefault();
+
+    // Client-side date guard (catches typed dates that bypass the min attribute)
+    const resultDiv = document.getElementById('availabilityResult');
+    const cin  = checkInEl.value;
+    const cout = checkOutEl.value;
+    if (!cin || cin < minDate) {
+        resultDiv.classList.remove('d-none');
+        resultDiv.innerHTML = `<div class="alert alert-danger"><i class="bi bi-exclamation-triangle-fill me-1"></i>Check-in date must be at least tomorrow (${minDate}).</div>`;
+        checkInEl.value = minDate;
+        return;
+    }
+    if (!cout || cout <= cin) {
+        resultDiv.classList.remove('d-none');
+        resultDiv.innerHTML = `<div class="alert alert-danger"><i class="bi bi-exclamation-triangle-fill me-1"></i>Check-out date must be after the check-in date.</div>`;
+        return;
+    }
+
     const btn = document.getElementById('checkBtn');
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Checking...';
