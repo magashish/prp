@@ -33,7 +33,7 @@
                     <td>{{ $b->check_in_date->format('M d, Y') }}</td>
                     <td>{{ $b->check_out_date->format('M d, Y') }}</td>
                     <td>
-                        @if($b->status === 'active') <span class="badge bg-success">Complete</span>
+                        @if($b->status === 'active') <span class="badge bg-primary">Complete</span>
                         @elseif($b->status === 'cancelled_with_refund') <span class="badge bg-warning text-dark">Cancelled</span> <span class="badge bg-danger">⚠</span>
                         @else <span class="badge bg-secondary">Cancelled</span>
                         @endif
