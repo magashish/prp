@@ -62,12 +62,20 @@ function renderCalendar(days, month, year) {
         body.appendChild(cell);
     }
 
+    // Today in Hawaii time for past/today highlighting
+    const hawaiiToday = new Date(new Date().toLocaleString('en-US', { timeZone: 'Pacific/Honolulu' }));
+    const todayStr = hawaiiToday.getFullYear() + '-' +
+        String(hawaiiToday.getMonth() + 1).padStart(2, '0') + '-' +
+        String(hawaiiToday.getDate()).padStart(2, '0');
+
     // Current month
     for (let d = 1; d <= daysInMonth; d++) {
         const dateStr = `${year}-${String(month).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
         const info    = days[dateStr] || {};
         const cell    = document.createElement('div');
-        cell.className = 'cal-cell';
+        const isPast    = dateStr < todayStr;
+        const isToday   = dateStr === todayStr;
+        cell.className = 'cal-cell' + (isPast ? ' cal-past' : '') + (isToday ? ' cal-today' : '');
         let html = `<div class="cal-day-num">${d}</div>`;
         if (info.stall1)      html += `<div class="event-s1" title="${info.stall1}">S1 – ${info.stall1.split(' ')[0]}</div>`;
         if (info.stall2)      html += `<div class="event-s2" title="${info.stall2}">S2 – ${info.stall2.split(' ')[0]}</div>`;
