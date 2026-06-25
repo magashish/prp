@@ -15,7 +15,7 @@ class DashboardController extends Controller
         $totalActive  = Booking::where('status', 'active')->whereDate('check_out_date', '>=', $today)->count();
         $reservedCount= Booking::where('stall_type', 'reserved')->where('status', 'active')->whereDate('check_out_date', '>=', $today)->count();
         $nonResCount  = Booking::where('stall_type', 'non_reserved')->where('status', 'active')->whereDate('check_out_date', '>=', $today)->count();
-        $pendingPass    = Booking::where('pass_status', 'required')->where('status', 'active')->count();
+        $pendingPass    = Booking::where('pass_status', 'required')->where('status', 'active')->whereDate('check_out_date', '>=', $today)->count();
         $cancelledCount = Booking::whereIn('status', ['cancelled_with_refund', 'cancelled_no_refund'])->count();
         $recentBookings = Booking::where('status', 'active')->whereDate('check_out_date', '>=', $today)->latest()->take(10)->get();
 
