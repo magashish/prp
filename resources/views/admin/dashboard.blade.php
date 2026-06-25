@@ -32,7 +32,7 @@
     <div class="col-md-3">
         <a href="{{ route('admin.bookings.cancelled') }}" class="text-decoration-none">
             <div class="card border-0 shadow-sm text-center p-3">
-                <div class="text-warning fs-1 fw-bold">{{ $cancelledCount }}</div>
+                <div class="text-success fs-1 fw-bold">{{ $cancelledCount }}</div>
                 <div class="text-muted small">Cancelled Bookings</div>
             </div>
         </a>
