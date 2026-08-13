@@ -38,7 +38,7 @@
                             <td class="text-end">${{ number_format($pending['subtotal'], 2) }}</td>
                         </tr>
                         <tr>
-                            <td class="text-muted">Tax (4.5%)</td>
+                            <td class="text-muted">Tax (4.712%)</td>
                             <td class="text-end">${{ number_format($pending['tax'], 2) }}</td>
                         </tr>
                         <tr>
@@ -101,7 +101,7 @@
                     {{-- Loading state --}}
                     <div id="card-fields-status" class="text-center text-muted py-3 small">
                         <div class="spinner-border spinner-border-sm me-1" role="status"></div>
-                        Loading secure card fields…
+                        Loading secure card fields&hellip;
                     </div>
 
                     <p class="payment-secure text-center mt-4 mb-0">
@@ -122,7 +122,6 @@
 const CSRF = '{{ csrf_token() }}';
 const TOTAL_LABEL = '${{ number_format($pending['total'], 2) }}';
 
-// Single order created once; both PayPal button and card fields share it.
 let _orderPromise = null;
 let _orderId = null;
 
@@ -139,7 +138,7 @@ function createOrder() {
             return d.id;
         })
         .catch(err => {
-            _orderPromise = null; // allow retry
+            _orderPromise = null;
             throw err;
         });
     }
@@ -166,7 +165,6 @@ function showError(msg) {
     el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-// ── PayPal Button ────────────────────────────────────────────────
 paypal.Buttons({
     createOrder,
     onApprove: async (data) => {
@@ -188,7 +186,6 @@ paypal.Buttons({
     style: { layout: 'vertical', color: 'blue', shape: 'rect', label: 'pay' },
 }).render('#paypal-button-container');
 
-// ── Hosted Card Fields ───────────────────────────────────────────
 const statusEl = document.getElementById('card-fields-status');
 
 if (paypal.HostedFields.isEligible()) {
@@ -211,7 +208,6 @@ if (paypal.HostedFields.isEligible()) {
         const btn = document.getElementById('card-submit');
         btn.disabled = false;
 
-        // Focus / blur styling
         ['card-number', 'expiration-date', 'cvv'].forEach(id => {
             const wrap = document.getElementById(id);
             cardFields.on('focus', e => { if (e.emittedBy === id.replace('-', '') || e.emittedBy === (id === 'expiration-date' ? 'expirationDate' : id.replace('-', ''))) wrap.classList.add('focused'); });

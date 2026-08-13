@@ -14,7 +14,7 @@
                     <div class="booking-summary mb-4">
                         <div class="row g-2 small">
                             <div class="col-6"><strong>Stall Type:</strong></div>
-                            <div class="col-6">{{ ucwords(str_replace('_', ' ', $pending['stall_type'])) }}{{ isset($pending['stall_number']) && $pending['stall_number'] ? ' – Stall #'.$pending['stall_number'] : '' }}</div>
+                            <div class="col-6">{{ ucwords(str_replace('_', ' ', $pending['stall_type'])) }}{{ isset($pending['stall_number']) && $pending['stall_number'] ? ' &ndash; Stall #'.$pending['stall_number'] : '' }}</div>
                             <div class="col-6"><strong>Check-in:</strong></div>
                             <div class="col-6">{{ \Carbon\Carbon::parse($pending['check_in_date'])->format('M d, Y') }}</div>
                             <div class="col-6"><strong>Check-out:</strong></div>
@@ -23,7 +23,7 @@
                             <div class="col-6">{{ $pending['days'] }}</div>
                             <div class="col-6"><strong>Subtotal:</strong></div>
                             <div class="col-6">${{ number_format($pending['subtotal'], 2) }}</div>
-                            <div class="col-6"><strong>Tax (4.5%):</strong></div>
+                            <div class="col-6"><strong>Tax (4.712%):</strong></div>
                             <div class="col-6">${{ number_format($pending['tax'], 2) }}</div>
                             <div class="col-12 text-muted small">Final total (including Parking Reservation Fee) shown at payment.</div>
                         </div>
@@ -47,18 +47,11 @@
                         </div>
 
                         <div class="mt-3 p-3 border rounded bg-light">
-                            <div class="form-check mb-2">
+                            <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="refund_plan" value="1" id="refundPlan">
                                 <label class="form-check-label" for="refundPlan">
-                                    <strong>Add Refund Protection Plan – $25.00</strong>
+                                    <strong>Add Refund Protection Plan &ndash; $25.00</strong>
                                     <small class="d-block text-muted">Receive a full refund if you need to cancel.</small>
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="international" value="1" id="internationalCard">
-                                <label class="form-check-label" for="internationalCard">
-                                    <strong>I am paying with an international card</strong>
-                                    <small class="d-block text-muted">A 4% Parking Reservation Fee applies (instead of 3%) for international cards.</small>
                                 </label>
                             </div>
                         </div>
@@ -73,7 +66,7 @@
                         <button type="submit" class="btn btn-success w-100 mt-3">
                             <i class="bi bi-lock-fill me-1"></i> Continue to Payment
                         </button>
-                        <a href="{{ route('home') }}" class="btn btn-outline-secondary w-100 mt-2">← Change Dates / Stall Type</a>
+                        <a href="{{ route('home') }}" class="btn btn-outline-secondary w-100 mt-2">&larr; Change Dates / Stall Type</a>
                     </form>
                 </div>
             </div>

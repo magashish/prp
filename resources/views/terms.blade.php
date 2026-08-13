@@ -27,7 +27,7 @@
                 <p class="small text-muted">Cancellations may be submitted online. Refunds are only issued if the <strong>Refund Protection Plan ($25)</strong> was purchased at the time of booking. Without this plan, no refund will be issued. Refunds are processed manually by the admin.</p>
 
                 <h5>5. Payment</h5>
-                <p class="small text-muted">All payments are processed securely through PayPal. Prices are quoted in USD. A 4.5% tax and 3% service fee apply to all bookings.</p>
+                <p class="small text-muted">All payments are processed securely through PayPal. Prices are quoted in USD. A 4.712% tax and 3% reservation fee apply to all bookings.</p>
 
                 <h5>6. Access</h5>
                 <p class="small text-muted">For non-reserved stalls, the customer must present a valid parking pass with the assigned access code to enter the parking garage. Entry is not permitted without the code.</p>

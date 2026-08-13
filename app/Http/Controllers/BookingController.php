@@ -11,7 +11,7 @@ class BookingController extends Controller
     const RESERVED_PRICE          = 45.00;
     const NON_RESERVED_PRICE      = 35.00;
     const REFUND_PLAN_PRICE       = 25.00;
-    const TAX_RATE                = 0.045;
+    const TAX_RATE                = 0.04712;
     const RESERVATION_FEE_RATE    = 0.03;
     const RESERVATION_FEE_INTL    = 0.04;
     const RESERVED_CAPACITY       = 2;
@@ -66,7 +66,6 @@ class BookingController extends Controller
 
         $tax = round($subtotal * self::TAX_RATE, 2);
 
-        // Store base values in session (reservation fee recalculated in storeSession with intl flag)
         session([
             'booking_pending' => [
                 'stall_type'    => $stallType,
@@ -131,14 +130,14 @@ class BookingController extends Controller
             return redirect()->route('home')->with('error', 'Session expired. Please start again.');
         }
 
-        $refundPlan    = $request->boolean('refund_plan');
-        $isIntl        = $request->boolean('international');
-        $feeRate       = $isIntl ? self::RESERVATION_FEE_INTL : self::RESERVATION_FEE_RATE;
-        $refundCost    = $refundPlan ? self::REFUND_PLAN_PRICE : 0;
-        $subtotal      = $pending['subtotal'] + $refundCost;
-        $tax           = round($subtotal * self::TAX_RATE, 2);
+        $refundPlan     = $request->boolean('refund_plan');
+        $isIntl         = $request->boolean('international');
+        $feeRate        = $isIntl ? self::RESERVATION_FEE_INTL : self::RESERVATION_FEE_RATE;
+        $refundCost     = $refundPlan ? self::REFUND_PLAN_PRICE : 0;
+        $subtotal       = $pending['subtotal'] + $refundCost;
+        $tax            = round($subtotal * self::TAX_RATE, 2);
         $reservationFee = round(($subtotal + $tax) * $feeRate, 2);
-        $total         = $subtotal + $tax + $reservationFee;
+        $total          = $subtotal + $tax + $reservationFee;
 
         session()->put('booking_pending.full_name',       $request->full_name);
         session()->put('booking_pending.phone_number',    $request->phone_number);
@@ -159,8 +158,6 @@ class BookingController extends Controller
     {
         return view('booking.confirmation', compact('booking'));
     }
-
-    // ─── Availability Helpers ─────────────────────────────────────
 
     private function findAvailableReservedStall(Carbon $checkIn, Carbon $checkOut): ?int
     {
@@ -200,21 +197,17 @@ class BookingController extends Controller
         return true;
     }
 
-    // ─── Business Rule Validation ─────────────────────────────────
-
     private function validateBookingRules(Carbon $checkIn, Carbon $checkOut, Carbon $now): ?string
     {
         $todayStr    = $now->toDateString();
         $tomorrowStr = $now->copy()->addDay()->toDateString();
         $checkInStr  = $checkIn->toDateString();
-        $dow         = $now->dayOfWeek; // Carbon: 0=Sun,1=Mon,...,5=Fri,6=Sat
+        $dow         = $now->dayOfWeek;
 
-        // No same-day booking
         if ($checkInStr <= $todayStr) {
             return 'Same-day booking is not allowed. Please select a future date.';
         }
 
-        // No Sunday booking on Saturday (checked before next-day rule to show the right message)
         if ($dow === Carbon::SATURDAY) {
             $upcomingSun = $now->copy()->next(Carbon::SUNDAY)->toDateString();
             if ($checkInStr === $upcomingSun) {
@@ -222,7 +215,6 @@ class BookingController extends Controller
             }
         }
 
-        // No weekend booking after Friday 12:00 PM (blocks upcoming Saturday and Sunday only)
         if ($dow === Carbon::FRIDAY && $now->hour >= 12) {
             $upcomingSat = $now->copy()->next(Carbon::SATURDAY)->toDateString();
             $upcomingSun = $now->copy()->next(Carbon::SUNDAY)->toDateString();
@@ -231,7 +223,6 @@ class BookingController extends Controller
             }
         }
 
-        // No next-day booking after 4:00 PM (system time)
         if ($checkInStr === $tomorrowStr && $now->hour >= 16) {
             return 'Next-day booking is closed after 4:00 PM.';
         }

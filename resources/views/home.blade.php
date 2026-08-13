@@ -64,11 +64,9 @@
                     <!-- Checkout form (shown after availability check) -->
                     <div id="checkoutSection" class="d-none mt-4">
                         <hr>
-                        
                         <h6 class="fw-bold mb-3 bg-primary text-white p-3 rounded d-flex align-items-center">
                             <i class="bi bi-person-fill me-2"></i> Complete your Information & Book
                         </h6>
-                        
                         <form action="{{ route('booking.store-session') }}" method="POST" id="checkoutForm">
                             @csrf
                             <div class="row g-3">
@@ -87,18 +85,11 @@
                             </div>
 
                             <div id="refundPlanSection" class="mt-3 p-3 border rounded bg-light">
-                                <div class="form-check mb-2">
+                                <div class="form-check">
                                     <input class="form-check-input" type="checkbox" name="refund_plan" value="1" id="refundPlan">
                                     <label class="form-check-label" for="refundPlan">
-                                        <strong>Add Refund Protection Plan – $25.00</strong>
+                                        <strong>Add Refund Protection Plan &ndash; $25.00</strong>
                                         <small class="d-block text-muted">Receive a full refund if you need to cancel.</small>
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="international" value="1" id="internationalCard">
-                                    <label class="form-check-label" for="internationalCard">
-                                        <strong>I am paying with an international card</strong>
-                                        <small class="d-block text-muted">A 4% Parking Reservation Fee applies (instead of 3%) for international cards.</small>
                                     </label>
                                 </div>
                             </div>
@@ -149,8 +140,6 @@
                     <table class="table table-sm mb-0 small">
                         <tr><td>Reserved Stall</td><td class="text-end fw-bold">$45/day</td></tr>
                         <tr><td>Non-Reserved Stall</td><td class="text-end fw-bold">$35/day</td></tr>
-                        <!-- <tr><td>Tax</td><td class="text-end">4.5%</td></tr>
-                        <tr><td>Service Fee</td><td class="text-end">3%</td></tr> -->
                         <tr><td>Refund Protection</td><td class="text-end">+$25.00</td></tr>
                     </table>
                 </div>
@@ -168,7 +157,7 @@
                 <div class="p-4">
                     <div class="mb-3" style="font-size:2.5rem; color:#0f4c81;"><i class="bi bi-people-fill"></i></div>
                     <h5 class="fw-bold">Who Is This For?</h5>
-                    <p class="text-muted">Anyone needing convenient, affordable parking near our facility. No account required — book in minutes as a guest. International visitors welcome.</p>
+                    <p class="text-muted">Anyone needing convenient, affordable parking near our facility. No account required &mdash; book in minutes as a guest. International visitors welcome.</p>
                 </div>
             </div>
             <div class="col-md-4">
@@ -192,7 +181,6 @@
 
 @push('scripts')
 <script>
-// Always calculate dates based on Hawaii Standard Time (UTC-10, no DST)
 function hawaiiDateString(offsetDays = 0) {
     const d = new Date(new Date().toLocaleString('en-US', { timeZone: 'Pacific/Honolulu' }));
     d.setDate(d.getDate() + offsetDays);
@@ -201,11 +189,11 @@ function hawaiiDateString(offsetDays = 0) {
         String(d.getDate()).padStart(2, '0');
 }
 
-const minDate = hawaiiDateString(1); // tomorrow in Hawaii
+const minDate = hawaiiDateString(1);
 const checkInEl  = document.getElementById('check_in_date');
 const checkOutEl = document.getElementById('check_out_date');
 checkInEl.min  = minDate;
-checkInEl.value = minDate;          // default to tomorrow so picker opens there
+checkInEl.value = minDate;
 checkOutEl.min  = minDate;
 
 checkInEl.addEventListener('change', function () {
@@ -232,14 +220,12 @@ function resetAvailability() {
     document.getElementById('totalDisplay').innerHTML = '';
 }
 
-const baseSubtotal  = { reserved: 45, non_reserved: 35 };
 const refundPlanCost = 25;
 let availData = null;
 
 document.getElementById('availabilityForm').addEventListener('submit', async function (e) {
     e.preventDefault();
 
-    // Client-side date guard (catches typed dates that bypass the min attribute)
     const availResultDiv = document.getElementById('availabilityResult');
     const cin  = checkInEl.value;
     const cout = checkOutEl.value;
@@ -293,7 +279,6 @@ document.getElementById('availabilityForm').addEventListener('submit', async fun
 });
 
 document.getElementById('refundPlan')?.addEventListener('change', updateTotal);
-document.getElementById('internationalCard')?.addEventListener('change', updateTotal);
 
 function selectAnotherDate() {
     document.getElementById('check_in_date').value = '';
@@ -310,21 +295,18 @@ function changeStallType() {
 function updateTotal() {
     if (!availData) return;
     const hasRefund = document.getElementById('refundPlan').checked;
-    const isIntl    = document.getElementById('internationalCard').checked;
-    const feeRate   = isIntl ? availData.fee_rate_intl : availData.fee_rate_std;
-    const feePct    = Math.round(feeRate * 100);
     const baseSubtotal = parseFloat(availData.subtotal);
     const subtotal  = baseSubtotal + (hasRefund ? refundPlanCost : 0);
-    const tax       = Math.round(subtotal * 0.045 * 100) / 100;
-    const resvFee   = Math.round((subtotal + tax) * feeRate * 100) / 100;
+    const tax       = Math.round(subtotal * 0.04712 * 100) / 100;
+    const resvFee   = Math.round((subtotal + tax) * 0.03 * 100) / 100;
     const total     = subtotal + tax + resvFee;
     const fmt = v => v.toFixed(2);
     document.getElementById('totalDisplay').innerHTML = `
         <table class="table table-sm small mb-0">
             ${hasRefund ? `<tr><td>Refund Protection Plan</td><td class="text-end">$${fmt(refundPlanCost)}</td></tr>` : ''}
             <tr><td>Subtotal</td><td class="text-end">$${fmt(subtotal)}</td></tr>
-            <tr><td>Tax (4.5%)</td><td class="text-end">$${fmt(tax)}</td></tr>
-            <tr><td>Parking Reservation Fee (${feePct}%)</td><td class="text-end">$${fmt(resvFee)}</td></tr>
+            <tr><td>Tax (4.712%)</td><td class="text-end">$${fmt(tax)}</td></tr>
+            <tr><td>Reservation Fees (3%)</td><td class="text-end">$${fmt(resvFee)}</td></tr>
             <tr class="table-primary fw-bold"><td>Total Due</td><td class="text-end">$${fmt(total)}</td></tr>
         </table>`;
 }
