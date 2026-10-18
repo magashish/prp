@@ -108,10 +108,10 @@ class BookingController extends Controller
             return redirect()->route('home')->with('error', 'Session expired. Please start again.');
         }
 
-        $mode     = config('paypal.mode');
-        $clientId = config("paypal.{$mode}.client_id");
+        $squareAppId    = config('square.application_id');
+        $squareLocationId = config('square.location_id');
 
-        return view('booking.payment', compact('pending', 'clientId'));
+        return view('booking.payment', compact('pending', 'squareAppId', 'squareLocationId'));
     }
 
     public function storeSession(Request $request)

@@ -18,7 +18,7 @@
     <div>
         <h5 class="fw-bold mb-1">⚠ Refund Action Required</h5>
         <p class="mb-1">This customer purchased the <strong>Refund Protection Plan</strong> and is eligible for a full refund of <strong>${{ number_format($booking->total_amount, 2) }}</strong>.</p>
-        <p class="mb-0">Please process the refund via PayPal or your payment processor. Transaction ID: <code>{{ $booking->paypal_transaction_id ?? 'N/A' }}</code></p>
+        <p class="mb-0">Please process the refund via Square Dashboard. Payment ID: <code>{{ $booking->square_payment_id ?? $booking->paypal_transaction_id ?? 'N/A' }}</code></p>
     </div>
 </div>
 @endif
@@ -60,7 +60,7 @@
                     <tr><th>Parking Reservation Fee</th><td>${{ number_format($booking->service_fee, 2) }}</td></tr>
                     <tr><th>Total Paid</th><td class="fw-bold">${{ number_format($booking->total_amount, 2) }}</td></tr>
                     <tr><th>Refund Plan</th><td>{!! $booking->refund_plan ? '<span class="badge bg-success">Yes – Eligible</span>' : 'No' !!}</td></tr>
-                    <tr><th>PayPal TxID</th><td><small>{{ $booking->paypal_transaction_id ?? '—' }}</small></td></tr>
+                    <tr><th>Payment ID</th><td><small>{{ $booking->square_payment_id ?? $booking->paypal_transaction_id ?? '—' }}</small></td></tr>
                     <tr>
                         <th>Pass Status</th>
                         <td>

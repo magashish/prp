@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CancellationController;
-use App\Http\Controllers\PayPalController;
+use App\Http\Controllers\SquareController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\BookingManageController;
@@ -18,12 +18,8 @@ Route::get('/contact', fn() => view('contact'))->name('contact');
 Route::get('/booking/confirmation/{booking}', [BookingController::class, 'confirmation'])->name('booking.confirmation');
 Route::get('/booking/payment', [BookingController::class, 'paymentPage'])->name('booking.payment');
 
-// ─── PayPal ───────────────────────────────────────────────────────
-Route::post('/paypal/order/create',  [PayPalController::class, 'createOrder'])->name('paypal.create-order');
-Route::post('/paypal/order/capture', [PayPalController::class, 'captureInline'])->name('paypal.capture-inline');
-Route::get('/payment/paypal', [PayPalController::class, 'redirect'])->name('paypal.redirect');
-Route::get('/payment/success', [PayPalController::class, 'success'])->name('paypal.success');
-Route::get('/payment/cancel', [PayPalController::class, 'cancel'])->name('paypal.cancel');
+// ─── Square ───────────────────────────────────────────────────────
+Route::post('/square/charge', [SquareController::class, 'charge'])->name('square.charge');
 
 // ─── Cancellation ────────────────────────────────────────────────
 Route::get('/cancel', [CancellationController::class, 'index'])->name('cancellation.index');

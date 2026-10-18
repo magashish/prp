@@ -37,6 +37,12 @@
                             <td class="text-muted">Subtotal</td>
                             <td class="text-end">${{ number_format($pending['subtotal'], 2) }}</td>
                         </tr>
+                        @if(!empty($pending['refund_plan']))
+                        <tr>
+                            <td class="text-muted">Refund Protection</td>
+                            <td class="text-end">$25.00</td>
+                        </tr>
+                        @endif
                         <tr>
                             <td class="text-muted">Tax (4.712%)</td>
                             <td class="text-end">${{ number_format($pending['tax'], 2) }}</td>
@@ -67,95 +73,126 @@
 
                     <div id="payment-error" class="alert alert-danger d-none mb-3" role="alert"></div>
 
-                    {{-- PayPal Button --}}
-                    <div id="paypal-button-container"></div>
-
-                    {{-- Card fields divider --}}
-                    <div class="divider">or pay with card</div>
-
-                    {{-- Hosted Card Fields --}}
-                    <div id="card-form" style="display:none">
-                        <div class="mb-3">
-                            <label class="form-label">Card Number</label>
-                            <div id="card-number" class="card-field-wrap"></div>
+                    <div class="mb-3">
+                        <label class="form-label">Card Number</label>
+                        <div id="card-number"></div>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-6">
+                            <label class="form-label">Expiration Date</label>
+                            <div id="expiration-date"></div>
                         </div>
-                        <div class="row g-3 mb-3">
-                            <div class="col-6">
-                                <label class="form-label">Expiry Date</label>
-                                <div id="expiration-date" class="card-field-wrap"></div>
-                            </div>
-                            <div class="col-6">
-                                <label class="form-label">CVV</label>
-                                <div id="cvv" class="card-field-wrap"></div>
-                            </div>
+                        <div class="col-6">
+                            <label class="form-label">CVV</label>
+                            <div id="cvv"></div>
                         </div>
-                        <div class="mb-4">
-                            <label class="form-label">Cardholder Name</label>
-                            <input type="text" id="card-holder-name" class="form-control" placeholder="Name as it appears on card" autocomplete="cc-name">
-                        </div>
-                        <button id="card-submit" class="btn btn-success w-100 py-2" disabled>
-                            <i class="bi bi-lock-fill me-1"></i> Pay ${{ number_format($pending['total'], 2) }}
-                        </button>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Postal Code</label>
+                        <div id="postal-code"></div>
                     </div>
 
-                    {{-- Loading state --}}
-                    <div id="card-fields-status" class="text-center text-muted py-3 small">
-                        <div class="spinner-border spinner-border-sm me-1" role="status"></div>
-                        Loading secure card fields&hellip;
-                    </div>
+                    <button id="pay-btn" class="btn btn-success w-100 py-2 mt-2">
+                        <i class="bi bi-lock-fill me-1"></i> Pay ${{ number_format($pending['total'], 2) }}
+                    </button>
 
-                    <p class="payment-secure text-center mt-4 mb-0">
+                    <p class="payment-secure text-center mt-3 mb-0 small">
                         <i class="bi bi-shield-lock-fill me-1 text-success"></i>
-                        Payments are encrypted and processed securely by PayPal.
+                        Payments are encrypted and processed securely by Square.
                     </p>
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 @endsection
 
 @push('scripts')
-{{-- PayPal JS SDK: hosted-fields + buttons together --}}
-<script src="https://www.paypal.com/sdk/js?client-id={{ $clientId }}&currency=USD&intent=capture&components=hosted-fields,buttons" data-csp-nonce=""></script>
-<script>
-const CSRF = '{{ csrf_token() }}';
-const TOTAL_LABEL = '${{ number_format($pending['total'], 2) }}';
+{{-- Square Web Payments SDK --}}
+@if(config('square.environment') === 'production')
+<script src="https://web.squarecdn.com/v1/square.js"></script>
+@else
+<script src="https://sandbox.web.squarecdn.com/v1/square.js"></script>
+@endif
 
-let _orderPromise = null;
-let _orderId = null;
-
-function createOrder() {
-    if (!_orderPromise) {
-        _orderPromise = fetch('{{ route("paypal.create-order") }}', {
-            method: 'POST',
-            headers: { 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' },
-        })
-        .then(r => r.json())
-        .then(d => {
-            if (d.error) throw new Error(d.error);
-            _orderId = d.id;
-            return d.id;
-        })
-        .catch(err => {
-            _orderPromise = null;
-            throw err;
-        });
-    }
-    return _orderPromise;
+<style>
+.sq-input {
+    border: 1px solid #ced4da;
+    border-radius: .375rem;
+    padding: .5rem .75rem;
+    background: #fff;
+    height: 42px;
 }
+.sq-input--focus  { border-color: #0d6efd; box-shadow: 0 0 0 .2rem rgba(13,110,253,.15); }
+.sq-input--error  { border-color: #dc3545; }
+</style>
 
-async function captureAndRedirect(orderId) {
-    const res = await fetch('{{ route("paypal.capture-inline") }}', {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': CSRF,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        },
-        body: JSON.stringify({ order_id: orderId }),
+<script>
+const CSRF        = '{{ csrf_token() }}';
+const APP_ID      = '{{ $squareAppId }}';
+const LOCATION_ID = '{{ $squareLocationId }}';
+
+async function initSquare() {
+    if (!window.Square) {
+        document.getElementById('payment-error').textContent = 'Square failed to load. Please refresh the page.';
+        document.getElementById('payment-error').classList.remove('d-none');
+        return;
+    }
+
+    const payments = Square.payments(APP_ID, LOCATION_ID);
+
+    const cardStyle = {
+        '.input-container': { borderColor: '#ced4da', borderRadius: '6px' },
+        '.input-container.is-focus': { borderColor: '#0d6efd' },
+        '.input-container.is-error': { borderColor: '#dc3545' },
+    };
+
+    const card = await payments.card({ style: cardStyle });
+
+    await card.attach('#card-number',       { intent: 'cardNumber' });
+    await card.attach('#expiration-date',   { intent: 'expirationDate' });
+    await card.attach('#cvv',               { intent: 'cvv' });
+    await card.attach('#postal-code',       { intent: 'postalCode' });
+
+    const btn = document.getElementById('pay-btn');
+
+    btn.addEventListener('click', async () => {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Processing…';
+        document.getElementById('payment-error').classList.add('d-none');
+
+        try {
+            const result = await card.tokenize();
+            if (result.status !== 'OK') {
+                const msg = result.errors?.map(e => e.message).join(' ') || 'Card tokenization failed.';
+                showError(msg);
+                resetBtn();
+                return;
+            }
+
+            const res  = await fetch('{{ route("square.charge") }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': CSRF,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({ source_id: result.token }),
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                window.location.href = data.redirect;
+            } else {
+                showError(data.message || 'Payment failed. Please try again.');
+                resetBtn();
+            }
+        } catch (err) {
+            showError(err.message || 'An unexpected error occurred. Please try again.');
+            resetBtn();
+        }
     });
-    return res.json();
 }
 
 function showError(msg) {
@@ -165,91 +202,12 @@ function showError(msg) {
     el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-paypal.Buttons({
-    createOrder,
-    onApprove: async (data) => {
-        const result = await captureAndRedirect(data.orderID);
-        if (result.success) {
-            window.location.href = result.redirect;
-        } else {
-            showError(result.message || 'Payment failed. Please try again.');
-            _orderPromise = null;
-        }
-    },
-    onError: () => {
-        showError('PayPal encountered an error. Please try again or pay with a card below.');
-        _orderPromise = null;
-    },
-    onCancel: () => {
-        _orderPromise = null;
-    },
-    style: { layout: 'vertical', color: 'blue', shape: 'rect', label: 'pay' },
-}).render('#paypal-button-container');
-
-const statusEl = document.getElementById('card-fields-status');
-
-if (paypal.HostedFields.isEligible()) {
-    paypal.HostedFields.render({
-        createOrder,
-        styles: {
-            'input': { 'font-size': '15px', 'color': '#212529', 'font-family': 'inherit' },
-            ':focus': { 'color': '#212529' },
-            '.invalid': { 'color': '#dc3545' },
-        },
-        fields: {
-            number:         { selector: '#card-number',     placeholder: '•••• •••• •••• ••••' },
-            expirationDate: { selector: '#expiration-date', placeholder: 'MM / YY' },
-            cvv:            { selector: '#cvv',             placeholder: '•••' },
-        },
-    }).then(cardFields => {
-        statusEl.style.display = 'none';
-        document.getElementById('card-form').style.display = 'block';
-
-        const btn = document.getElementById('card-submit');
-        btn.disabled = false;
-
-        ['card-number', 'expiration-date', 'cvv'].forEach(id => {
-            const wrap = document.getElementById(id);
-            cardFields.on('focus', e => { if (e.emittedBy === id.replace('-', '') || e.emittedBy === (id === 'expiration-date' ? 'expirationDate' : id.replace('-', ''))) wrap.classList.add('focused'); });
-            cardFields.on('blur',  e => { wrap.classList.remove('focused'); });
-        });
-
-        btn.addEventListener('click', async () => {
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Processing…';
-            document.getElementById('payment-error').classList.add('d-none');
-
-            try {
-                await cardFields.submit({
-                    cardholderName: document.getElementById('card-holder-name').value,
-                    contingencies: ['3D_SECURE'],
-                });
-
-                const result = await captureAndRedirect(_orderId);
-                if (result.success) {
-                    window.location.href = result.redirect;
-                } else {
-                    showError(result.message || 'Payment failed. Please try again.');
-                    btn.disabled = false;
-                    btn.innerHTML = '<i class="bi bi-lock-fill me-1"></i> Pay ' + TOTAL_LABEL;
-                    _orderPromise = null;
-                    _orderId = null;
-                }
-            } catch (err) {
-                showError(err.message || 'An error occurred. Please check your card details and try again.');
-                btn.disabled = false;
-                btn.innerHTML = '<i class="bi bi-lock-fill me-1"></i> Pay ' + TOTAL_LABEL;
-                _orderPromise = null;
-                _orderId = null;
-            }
-        });
-
-    }).catch(() => {
-        statusEl.textContent = 'Card payment is unavailable in this environment. Please use the PayPal button above.';
-    });
-
-} else {
-    statusEl.textContent = 'Direct card payment requires a PayPal merchant account with Advanced Card Fields enabled. Please use the PayPal button above.';
+function resetBtn() {
+    const btn = document.getElementById('pay-btn');
+    btn.disabled = false;
+    btn.innerHTML = '<i class="bi bi-lock-fill me-1"></i> Pay ${{ number_format($pending["total"], 2) }}';
 }
+
+initSquare();
 </script>
 @endpush

@@ -24,6 +24,7 @@ class Booking extends Model
         'service_fee',
         'total_amount',
         'paypal_transaction_id',
+        'square_payment_id',
         'notes',
     ];
 
