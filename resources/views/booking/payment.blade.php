@@ -74,22 +74,8 @@
                     <div id="payment-error" class="alert alert-danger d-none mb-3" role="alert"></div>
 
                     <div class="mb-3">
-                        <label class="form-label">Card Number</label>
-                        <div id="card-number"></div>
-                    </div>
-                    <div class="row g-3 mb-3">
-                        <div class="col-6">
-                            <label class="form-label">Expiration Date</label>
-                            <div id="expiration-date"></div>
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label">CVV</label>
-                            <div id="cvv"></div>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Postal Code</label>
-                        <div id="postal-code"></div>
+                        <label class="form-label">Card Details</label>
+                        <div id="card-container"></div>
                     </div>
 
                     <button id="pay-btn" class="btn btn-success w-100 py-2 mt-2">
@@ -117,15 +103,7 @@
 @endif
 
 <style>
-.sq-input {
-    border: 1px solid #ced4da;
-    border-radius: .375rem;
-    padding: .5rem .75rem;
-    background: #fff;
-    height: 42px;
-}
-.sq-input--focus  { border-color: #0d6efd; box-shadow: 0 0 0 .2rem rgba(13,110,253,.15); }
-.sq-input--error  { border-color: #dc3545; }
+#card-container { min-height: 90px; }
 </style>
 
 <script>
@@ -135,29 +113,24 @@ const LOCATION_ID = '{{ $squareLocationId }}';
 
 async function initSquare() {
     if (!window.Square) {
-        document.getElementById('payment-error').textContent = 'Square failed to load. Please refresh the page.';
-        document.getElementById('payment-error').classList.remove('d-none');
+        showError('Square failed to load. Please refresh the page.');
         return;
     }
 
     const payments = Square.payments(APP_ID, LOCATION_ID);
 
-    const cardStyle = {
-        '.input-container': { borderColor: '#ced4da', borderRadius: '6px' },
-        '.input-container.is-focus': { borderColor: '#0d6efd' },
-        '.input-container.is-error': { borderColor: '#dc3545' },
-    };
+    const card = await payments.card({
+        style: {
+            '.input-container': { borderColor: '#ced4da', borderRadius: '6px' },
+            '.input-container.is-focus': { borderColor: '#0d6efd' },
+            '.input-container.is-error': { borderColor: '#dc3545' },
+        }
+    });
 
-    const card = await payments.card({ style: cardStyle });
+    await card.attach('#card-container');
 
-    await card.attach('#card-number',       { intent: 'cardNumber' });
-    await card.attach('#expiration-date',   { intent: 'expirationDate' });
-    await card.attach('#cvv',               { intent: 'cvv' });
-    await card.attach('#postal-code',       { intent: 'postalCode' });
-
-    const btn = document.getElementById('pay-btn');
-
-    btn.addEventListener('click', async () => {
+    document.getElementById('pay-btn').addEventListener('click', async () => {
+        const btn = document.getElementById('pay-btn');
         btn.disabled = true;
         btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Processing…';
         document.getElementById('payment-error').classList.add('d-none');
@@ -165,8 +138,7 @@ async function initSquare() {
         try {
             const result = await card.tokenize();
             if (result.status !== 'OK') {
-                const msg = result.errors?.map(e => e.message).join(' ') || 'Card tokenization failed.';
-                showError(msg);
+                showError(result.errors?.map(e => e.message).join(' ') || 'Card tokenization failed.');
                 resetBtn();
                 return;
             }
