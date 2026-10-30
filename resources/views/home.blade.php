@@ -28,7 +28,7 @@
                                     <input class="form-check-input" type="radio" name="stall_type" id="stallReserved" value="reserved" required>
                                     <label class="form-check-label w-100" for="stallReserved" style="cursor:pointer">
                                         <strong>Reserved Stall</strong><br>
-                                        <span class="price-badge">$45/day</span>
+                                        <span class="price-badge">$35/day</span>
                                         <small class="d-block text-muted mt-1">Limited to 2 stalls. Confirmation printout sent.</small>
                                     </label>
                                 </div>
@@ -36,7 +36,7 @@
                                     <input class="form-check-input" type="radio" name="stall_type" id="stallNonReserved" value="non_reserved" required>
                                     <label class="form-check-label w-100" for="stallNonReserved" style="cursor:pointer">
                                         <strong>Non-Reserved Stall</strong><br>
-                                        <span class="price-badge" style="background:#02A38A">$35/day</span>
+                                        <span class="price-badge" style="background:#02A38A">$30/day</span>
                                         <small class="d-block text-muted mt-1">Parking pass with code required.</small>
                                     </label>
                                 </div>
@@ -138,8 +138,8 @@
                 <div class="card-body">
                     <h6 class="fw-bold"><i class="bi bi-currency-dollar text-success me-2"></i>Pricing</h6>
                     <table class="table table-sm mb-0 small">
-                        <tr><td>Reserved Stall</td><td class="text-end fw-bold">$45/day</td></tr>
-                        <tr><td>Non-Reserved Stall</td><td class="text-end fw-bold">$35/day</td></tr>
+                        <tr><td>Reserved Stall</td><td class="text-end fw-bold">$35/day</td></tr>
+                        <tr><td>Non-Reserved Stall</td><td class="text-end fw-bold">$30/day</td></tr>
                         <tr><td>Refund Protection</td><td class="text-end">+$25.00</td></tr>
                     </table>
                 </div>
@@ -164,7 +164,7 @@
                 <div class="p-4">
                     <div class="mb-3" style="font-size:2.5rem; color:#02A38A;"><i class="bi bi-car-front-fill"></i></div>
                     <h5 class="fw-bold">What Do You Get?</h5>
-                    <p class="text-muted">Choose a <strong>Reserved Stall</strong> ($45/day) for a guaranteed dedicated spot, or a <strong>Non-Reserved Stall</strong> ($35/day) for flexible open parking with an access code. All bookings include a confirmation email.</p>
+                    <p class="text-muted">Choose a <strong>Reserved Stall</strong> ($35/day) for a guaranteed dedicated spot, or a <strong>Non-Reserved Stall</strong> ($30/day) for flexible open parking with an access code. All bookings include a confirmation email.</p>
                 </div>
             </div>
             <div class="col-md-4">

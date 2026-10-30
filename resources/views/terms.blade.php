@@ -12,7 +12,7 @@
                 <p class="small text-muted">All bookings are subject to availability. Payment is required at the time of booking. Only paid bookings are confirmed.</p>
 
                 <h5>2. Stall Types</h5>
-                <p class="small text-muted">Reserved stalls ($45/day) are limited to 2 spaces. A parking printout must be placed on the vehicle dashboard. Non-reserved stalls ($35/day) provide access to up to 75 available spaces and require a parking pass with access code to enter the garage.</p>
+                <p class="small text-muted">Reserved stalls ($35/day) are limited to 2 spaces. A parking printout must be placed on the vehicle dashboard. Non-reserved stalls ($30/day) provide access to up to 75 available spaces and require a parking pass with access code to enter the garage.</p>
 
                 <h5>3. Booking Rules</h5>
                 <ul class="small text-muted">

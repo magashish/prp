@@ -8,8 +8,8 @@ use Illuminate\Http\Request;
 
 class BookingController extends Controller
 {
-    const RESERVED_PRICE          = 45.00;
-    const NON_RESERVED_PRICE      = 35.00;
+    const RESERVED_PRICE          = 35.00;
+    const NON_RESERVED_PRICE      = 30.00;
     const REFUND_PLAN_PRICE       = 25.00;
     const TAX_RATE                = 0.04712;
     const RESERVATION_FEE_RATE    = 0.03;
