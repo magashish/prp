@@ -18,6 +18,7 @@
         <a href="{{ route('admin.bookings.past') }}" class="nav-link {{ request()->routeIs('admin.bookings.past') ? 'active' : '' }}"><i class="bi bi-archive me-2"></i>Past Bookings</a>
         <a href="{{ route('admin.bookings.cancelled') }}" class="nav-link {{ request()->routeIs('admin.bookings.cancelled') ? 'active' : '' }}"><i class="bi bi-x-circle me-2"></i>Cancelled Bookings</a>
         <a href="{{ route('admin.calendar') }}" class="nav-link {{ request()->routeIs('admin.calendar') ? 'active' : '' }}"><i class="bi bi-calendar3 me-2"></i>Calendar View</a>
+        <a href="{{ route('admin.settings.edit') }}" class="nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}"><i class="bi bi-gear me-2"></i>Email Settings</a>
     </nav>
     <div class="mt-auto p-3">
         <form action="{{ route('admin.logout') }}" method="POST">

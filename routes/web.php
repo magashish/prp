@@ -7,6 +7,7 @@ use App\Http\Controllers\SquareController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\BookingManageController;
+use App\Http\Controllers\Admin\SettingController;
 
 // ─── Public Routes ────────────────────────────────────────────────
 Route::get('/', [BookingController::class, 'index'])->name('home');
@@ -51,7 +52,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/calendar', [DashboardController::class, 'calendar'])->name('calendar');
         Route::get('/calendar/data', [DashboardController::class, 'calendarData'])->name('calendar.data');
 
-        // Settings (stub – redirects to dashboard)
-        Route::get('/settings', fn() => redirect()->route('admin.dashboard'))->name('settings.edit');
+        // Settings
+        Route::get('/settings', [SettingController::class, 'edit'])->name('settings.edit');
+        Route::put('/settings', [SettingController::class, 'update'])->name('settings.update');
     });
 });
