@@ -50,5 +50,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Calendar
         Route::get('/calendar', [DashboardController::class, 'calendar'])->name('calendar');
         Route::get('/calendar/data', [DashboardController::class, 'calendarData'])->name('calendar.data');
+
+        // Settings (stub – redirects to dashboard)
+        Route::get('/settings', fn() => redirect()->route('admin.dashboard'))->name('settings.edit');
     });
 });
