@@ -54,6 +54,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Settings
         Route::get('/settings', [SettingController::class, 'edit'])->name('settings.edit');
-        Route::put('/settings', [SettingController::class, 'update'])->name('settings.update');
+        Route::post('/settings', [SettingController::class, 'update'])->name('settings.update');
     });
 });

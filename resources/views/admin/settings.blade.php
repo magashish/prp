@@ -11,7 +11,7 @@
             <div class="card-body p-4">
                 <form action="{{ route('admin.settings.update') }}" method="POST">
                     @csrf
-                    @method('PUT')
+
 
                     <div class="mb-3">
                         <label class="form-label">Admin Email</label>
