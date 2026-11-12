@@ -85,6 +85,11 @@ class BookingManageController extends Controller
         return view('admin.bookings.show', compact('booking'));
     }
 
+    public function pass(Booking $booking)
+    {
+        return view('admin.bookings.pass', compact('booking'));
+    }
+
     public function edit(Booking $booking)
     {
         return view('admin.bookings.edit', compact('booking'));

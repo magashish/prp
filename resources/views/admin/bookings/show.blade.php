@@ -86,6 +86,13 @@
             <div class="card-footer bg-white d-flex gap-2">
                 @if($booking->status === 'active')
                 <a href="{{ route('admin.bookings.edit', $booking) }}" class="btn btn-outline-primary btn-sm">Edit</a>
+                @endif
+                @if($booking->stall_type === 'reserved')
+                <a href="{{ route('admin.bookings.pass', $booking) }}" target="_blank" class="btn btn-success btn-sm">
+                    <i class="bi bi-printer-fill me-1"></i> View / Print Pass
+                </a>
+                @endif
+                @if($booking->status === 'active')
                 <button type="button" class="btn btn-warning btn-sm ms-auto" data-bs-toggle="modal" data-bs-target="#cancelModal">
                     Cancel Booking
                 </button>

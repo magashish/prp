@@ -47,6 +47,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('/bookings/{booking}', [BookingManageController::class, 'destroy'])->name('bookings.destroy');
         Route::post('/bookings/{booking}/parking-code', [BookingManageController::class, 'sendParkingCode'])->name('bookings.parking-code');
         Route::post('/bookings/{booking}/cancel', [BookingManageController::class, 'cancel'])->name('bookings.cancel');
+        Route::get('/bookings/{booking}/pass', [BookingManageController::class, 'pass'])->name('bookings.pass');
 
         // Calendar
         Route::get('/calendar', [DashboardController::class, 'calendar'])->name('calendar');
